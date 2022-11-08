@@ -51,7 +51,7 @@ public class Login extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private boolean correo_exitoso,contrasena_exitoso;
    // private  JSONArray json_datos_usuario;
-    private  JSONObject json_datos_usuario;
+    private  JSONArray json_datos_usuario;
     private  String strInicio,strUsuario,strId,stridSesion;
 
 
@@ -143,70 +143,65 @@ public class Login extends AppCompatActivity {
                         }
                         else
                         {
-                                try {
+                            try {
 
-                                    //json_datos_usuario=new JSONArray(response);
-                                    json_datos_usuario=new JSONObject(response);
-                                    strId = json_datos_usuario.getString("id");
-                                    String strUsuario = json_datos_usuario.getString("usuario");
-                                    //String strContra = json_datos_usuario.getString("contra");
-                                    String strTipoUsuario = json_datos_usuario.getString("tipoUsuario");
-                                    //String strActivo=json_datos_usuario.getString("activo");
-                                    String strFirecode=json_datos_usuario.getString("fireCode");
-                                    stridSesion=json_datos_usuario.getString("idSesion");
-                                    Log.e("id_sesion",""+stridSesion);
-                                    Log.e("lala",""+json_datos_usuario);
+                                json_datos_usuario=new JSONArray(response);
+                                Log.e("lala",""+json_datos_usuario);
+                                for (int i=0;i<json_datos_usuario.length();i++){
+                                    JSONObject jsonObject = json_datos_usuario.getJSONObject(i);
+                                    //Log.e("nombreMovies", String.valueOf(jsonObject));
+                                    String strId = jsonObject.getString("id");
+                                    String strNombre= jsonObject.getString("nombre");
+                                    String strContrasena= jsonObject.getString("contrasena");
+                                    String strFecha_registro=jsonObject.getString("fecha_registro");
+                                    String strHistorial_venta=jsonObject.getString("historial_venta");
+                                    String strCalificacion=jsonObject.getString("calificacion");
+                                    String strActivo=jsonObject.getString("activo");
+                                    String strReportes= jsonObject.getString("reportes");
+                                    String stRol_usuario=jsonObject.getString("rol_usuario");
+                                    String strFireCode= jsonObject.getString("fireCode");
+                                    String strIdSesion=jsonObject.getString("idSesion");
+                                    Log.e("idsesion",strIdSesion);
+
+
                                     editor.putString("id",strId);
-                                    editor.putString("usuario",strUsuario);
-                                    //editor.putString("contra",strContra);
-                                    editor.putString("tipoUsuario",strTipoUsuario);
-                                    //editor.putString("activo",strActivo);
-                                    editor.putString("fireCode",strFirecode);
-                                    editor.putString("idSesion",stridSesion);
+                                    editor.putString("nombre",strNombre);
+                                    editor.putString("contrasena",strContrasena);
+                                    editor.putString("fecha_registro",strFecha_registro);
+                                    editor.putString("historial_venta",strHistorial_venta);
+                                    editor.putString("calificacion",strCalificacion);
+                                    editor.putString("activo",strActivo);
+                                    editor.putString("reportes",strReportes);
+                                    editor.putString("rol_usuario",stRol_usuario);
+                                    editor.putString("fireCode",strFireCode);
+                                    editor.putString("idSesion",strIdSesion);
 
                                     editor.apply();
+                                    Log.e("1",""+strId);
+                                    Log.e("id_sesion",strNombre);
+                                    Log.e("3",strContrasena);
+                                    Log.e("4",strFecha_registro);
+                                    Log.e("5",strHistorial_venta);
+                                    Log.e("6",strCalificacion);
+                                    Log.e("7",strActivo);
+                                    Log.e("8",""+strReportes);
+                                    Log.e("9",stRol_usuario);
+                                    Log.e("10",strFireCode);
+                                    Log.e("11",strIdSesion);
 
-                                    datosUsuario.getString("usuario","no hay");
-                                    String prefedatosus=datosUsuario.getString("idSesion","no hay");
-                                    Log.e("comprobacion",""+prefedatosus);
 
-                                    Log.e("1",""+strUsuario);
-                                   // Log.e("2",strContra);
-                                    Log.e("2",strTipoUsuario);
-                                   // Log.e("3",strActivo);
-                                    Log.e("4",strFirecode);
-                                    Log.e("5",stridSesion);
-                                    /*for (int i=0;i<json_datos_usuario.length();i++){
-                                        JSONObject jsonObject = json_datos_usuario.getJSONObject(i);
-                                        //Log.e("nombreMovies", String.valueOf(jsonObject));
-                                        String strId = jsonObject.getString("id");
-                                        String strUsuario = jsonObject.getString("usuario");
-                                        String strContra = jsonObject.getString("contra");
-                                        String strTipoUsuario = jsonObject.getString("tipoUsuario");
-                                        String strActivo=jsonObject.getString("activo");
-                                        String strFirecode=jsonObject.getString("fireCode");
-                                        String stridSesion=jsonObject.getString("idSesion");
+                                    Intent intent = new Intent(Login.this, Estacion.class);
+                                    startActivity(intent);
 
-                                        editor.putString("id",strId);
-                                        editor.putString("usuario",strUsuario);
-                                        editor.putString("contra",strContra);
-                                        editor.putString("tipoUsuario",strTipoUsuario);
-                                        editor.putString("activo",strActivo);
-                                        editor.putString("fireCode",strFirecode);
-                                        editor.putString("idSesion",stridSesion);
 
-                                        editor.apply();
-                                        Log.e("1",""+strUsuario);
-                                        Log.e("2",strContra);
-                                        Log.e("2",strTipoUsuario);
-                                        Log.e("3",strActivo);
-                                        Log.e("4",strFirecode);
-                                        Log.e("5",stridSesion);
 
-                                    }*/
+
+
+
                                 }
+                            }
                                 catch (JSONException e) {
-                                    Log.e("errorRespuesta", String.valueOf(e));
+                                    Log.e("error de json", String.valueOf(e));
                                 }
 
                         }
@@ -214,27 +209,27 @@ public class Login extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e( "error", "error: " +error.getMessage());
+                Log.e( "aquiMamo", "error: " +error.getMessage());
             }
         }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String,String> map = new HashMap<>();
-                map.put("usuario", valUsuario);
-                map.put("contra",valContra);
+                map.put("nombre", valUsuario);
+                map.put("contrasena",valContra);
                 return map;
             }
         };
         requestQueue.add(request);
     }
     private void checkSesion() {
-        strInicio = datosUsuario.getString("id_sesion", "no");
+        strInicio = datosUsuario.getString("idSesion", "no");
 
         Log.e("inicio",""+strInicio);
         if (!strInicio.equals("no"))
         {
 
-            Log.e("idsesion_main",strInicio);
+            Log.e("idSesion",strInicio);
             Intent agenda= new Intent(Login.this, Estacion.class);
             startActivity(agenda);
         }

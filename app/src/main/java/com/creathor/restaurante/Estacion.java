@@ -3,7 +3,6 @@ package com.creathor.restaurante;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
@@ -57,7 +56,7 @@ public class Estacion extends AppCompatActivity {
     private JSONArray json_pedido,json_pedido_mesero;
     private Context context;
     private static String SERVIDOR_CONTROLADOR;
-    private SharedPreferences pedidos_preferencia;
+    private SharedPreferences id_SesionSher,idSher;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,8 +95,10 @@ public class Estacion extends AppCompatActivity {
         adapterMeceros = new AdapterMeceros(activity,R.layout.meceros_disponibles,listaMeceros,getResources());
         meceros_disponibles.setAdapter(adapterMeceros);
 
-        pedidos_preferencia=getSharedPreferences("Usuario",this.MODE_PRIVATE);
-
+        id_SesionSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
+        idSesion= id_SesionSher.getString("idSesion","no hay");
+        idSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
+        id= idSher.getString("idSesion","no hay");
 
         pedir_pedidos.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,8 +109,6 @@ public class Estacion extends AppCompatActivity {
                     @Override
                     public void run() {
                         pedir_pedidos();
-                        idSesion=pedidos_preferencia.getString("idSesion","no hay");
-                        id=pedidos_preferencia.getString("id","no hay");
                         Log.e("id",""+id);
                         Log.e("idEstacion",""+idSesion);
 
@@ -222,9 +221,11 @@ public class Estacion extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
 
-                        String limpio=response.replace("\\","");
+                        String limpio=response;
                         Log.e("jsonObject:",""+response);
+                        Log.e("jsonObject:",""+limpio);
 
+                        /*
                         JSONArray jsonArray = null;
                         try {
 
@@ -260,7 +261,7 @@ public class Estacion extends AppCompatActivity {
 
                         } catch (JSONException e) {
                             Log.e("errorRespuestaMovies", String.valueOf(e));
-                        }
+                        }*/
                         Log.e("jsonaraa:",""+json_pedido);
                     }
                 },
@@ -277,15 +278,10 @@ public class Estacion extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String,String> map = new HashMap<>();
-                map.put("id",id);
-                map.put("sesion",idSesion);
-                // map.put("id_sesion",id_sesion);
-                //map.put("ubicacion", strUbicacion);
-                //map.put("contacto", strContacto);
-                //map.put("ayuda", strAyuda);
+                map.put("id", id);
+                map.put("idSesion",idSesion);
                 return map;
             }
-
         };
         requestQueue.add(request);
     }
