@@ -112,6 +112,7 @@ public class Estacion extends AppCompatActivity {
                         Log.e("id",""+id);
                         Log.e("idEstacion",""+idSesion);
 
+
                         Log.e("puto_topito","y omar igual");
                     }
                 });
@@ -225,7 +226,7 @@ public class Estacion extends AppCompatActivity {
                         Log.e("jsonObject:",""+response);
                         Log.e("jsonObject:",""+limpio);
 
-                        /*
+
                         JSONArray jsonArray = null;
                         try {
 
@@ -261,7 +262,7 @@ public class Estacion extends AppCompatActivity {
 
                         } catch (JSONException e) {
                             Log.e("errorRespuestaMovies", String.valueOf(e));
-                        }*/
+                        }
                         Log.e("jsonaraa:",""+json_pedido);
                     }
                 },

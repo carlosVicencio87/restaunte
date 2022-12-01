@@ -22,6 +22,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -93,15 +94,14 @@ public class Login extends AppCompatActivity {
                         ingresar.setVisibility(View.GONE);
                         mensaje.setText("Iniciando sesión ...");
                         mensaje.setVisibility(View.VISIBLE);
-                        executorService.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                hacerPeticion();
-                                Intent intent = new Intent(Login.this, Estacion.class);
-                                startActivity(intent);
-                                Log.e("entnedi_señor_calamardo","y esto igual");
-                            }
-                        });
+                            executorService.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    hacerPeticion();
+
+                                    Log.e("entnedi_señor_calamardo","y esto igual");
+                                }
+                            });
 
 
                     }
@@ -205,11 +205,16 @@ public class Login extends AppCompatActivity {
                                 }
 
                         }
-                    }
-                }, new Response.ErrorListener() {
+                    }}, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if (error == null) {
+                    if (error.getClass().equals(TimeoutError.class)){
+                        Toast.makeText(getApplicationContext(),"Time Out Error",Toast.LENGTH_LONG).show();
+                    }
+                }
                 Log.e( "aquiMamo", "error: " +error.getMessage());
+                Log.d("aquimamo2",""+ error.getStackTrace());
             }
         }){
             @Override
