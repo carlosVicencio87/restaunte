@@ -13,51 +13,126 @@
     <LinearLayout
         android:id="@+id/caja_lista_pedidos_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white"
         android:layout_weight="2"
         android:orientation="vertical"
         >
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:gravity="center">
-            <TextView
-                android:id="@+id/id"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="id"
+            android:layout_height="120dp"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
                 android:gravity="center"
-                android:textSize="20dp"/>
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="id"
+                    android:gravity="center"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="id"
+                    android:gravity="center"
+                    android:textSize="20dp"/>
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:gravity="center">
-            <TextView
-                android:id="@+id/mesa"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="mesa"
+            android:layout_height="120dp"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
                 android:gravity="center"
-                android:textSize="20dp"/>
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="Mesa:"
+                    android:gravity="center"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/mesa"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="mesa"
+                    android:gravity="center"
+                    android:textSize="20dp"/>
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:gravity="center">
-            <TextView
-                android:id="@+id/comanda"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="comanda"
+            android:layout_height="120dp"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
                 android:gravity="center"
-                android:textSize="20dp"/>
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="Comanda:"
+                    android:gravity="center"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/comanda"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="comanda"
+                    android:gravity="center"
+                    android:textSize="20dp"/>
+            </LinearLayout>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="Precio:"
+                    android:gravity="center"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="30dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_weight="1">
             <TextView
                 android:id="@+id/precio"
                 android:layout_width="wrap_content"
@@ -66,10 +141,29 @@
                 android:gravity="center"
                 android:textSize="20dp"/>
         </LinearLayout>
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="Fecha de ingreso:"
+                    android:gravity="center"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="30dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_weight="1">
             <TextView
                 android:id="@+id/fecha_ingreso"
                 android:layout_width="wrap_content"
@@ -78,11 +172,30 @@
                 android:gravity="center"
                 android:textSize="20dp"/>
         </LinearLayout>
+        </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="Mecero asignado:"
+                    android:gravity="center"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="30dp"
             android:gravity="center"
-            android:visibility="visible">
+            android:visibility="visible"
+            android:layout_weight="1">
             <TextView
                 android:id="@+id/mecero_asignado"
                 android:layout_width="wrap_content"
@@ -90,6 +203,7 @@
                 android:text="Mecero asignado"
                 android:gravity="center"
                 android:textSize="20dp"/>
+        </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
