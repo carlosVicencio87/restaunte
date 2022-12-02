@@ -45,15 +45,16 @@ public class Estacion extends AppCompatActivity {
     private LinearLayout caja_lista_pedidos_recycler,caja_pedir_pedidos;
     private ConstraintLayout caja_asignar_mecero,caja_confirmar_mecero,caja_velo_mecero;
     private TextView pedir_pedidos,confirmar_mecero,confirmar_no,confirmar_si,texto_asignador;
-    private Spinner meceros_disponibles;
     public ArrayList<SpinnerModel> listaMeceros = new ArrayList<>();
     private AdapterMeceros adapterMeceros;
     private String seleccion_mecero,selector_pedidos,strCadena,id_pedido_actual,id_encontrada,comanda_encontrada,mesa_encontrada,precio_encontrado,fecha_encontrada,id,idSesion;
     private Estacion activity;
-    private RecyclerView lista_pedidos_recycler,lista_espera_recycler;
+    private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles;
     private AdapterListaPedidos adapterListaPedidos,adapterListaEspera;
     private ArrayList <ListaPedidosRecycler> listaPedidosRecyclers, listaPedidosAsignados;
-    private JSONArray json_pedido,json_pedido_mesero;
+    private ArrayList <ListaMeserosDisponibles> listaMeserosDisponibles;
+    private AdapterMeserosDisponibles adapterMeserosDisponibles;
+    private JSONArray json_pedido,json_pedido_mesero,json_meseros_disponibles;
     private Context context;
     private static String SERVIDOR_CONTROLADOR;
     private SharedPreferences id_SesionSher,idSher;
@@ -91,9 +92,11 @@ public class Estacion extends AppCompatActivity {
         listaPedidosAsignados=new ArrayList<>();
         lista_espera_recycler.setLayoutManager(new LinearLayoutManager(Estacion.this,LinearLayoutManager.VERTICAL,false));
 
+        listaMeserosDisponibles=new ArrayList<>();
+        meceros_disponibles.setLayoutManager(new LinearLayoutManager(Estacion.this,LinearLayoutManager.VERTICAL,false));
 
-        adapterMeceros = new AdapterMeceros(activity,R.layout.meceros_disponibles,listaMeceros,getResources());
-        meceros_disponibles.setAdapter(adapterMeceros);
+
+
 
         id_SesionSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
         idSesion= id_SesionSher.getString("idSesion","no hay");
@@ -122,28 +125,7 @@ public class Estacion extends AppCompatActivity {
             }
         });
 
-        meceros_disponibles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                TextView selector_mecero=findViewById(R.id.mecerosDisponibles);
-                if (selector_mecero==null)
-                {
-                    selector_mecero=(TextView) view.findViewById(R.id.mecerosDisponibles);
-                }
-                else
-                {
-                    selector_mecero=(TextView) view.findViewById(R.id.mecerosDisponibles);
-                }
-                seleccion_mecero =selector_mecero.getText().toString();
-                Log.e("tipomat",""+seleccion_mecero);
 
-
-
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
         confirmar_mecero.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -381,7 +363,83 @@ public class Estacion extends AppCompatActivity {
         }
     }*/
     public void setListaMeceros()
-    {
+    {  RequestQueue requestQueue= Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(Request.Method.POST,  SERVIDOR_CONTROLADOR+"meserosDisponibles.php",
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+
+                        String limpio=response;
+                        Log.e("jsonObject:",""+response);
+                        Log.e("jsonObject:",""+limpio);
+
+
+                        JSONArray jsonArray = null;
+                        try {
+
+                            json_meseros_disponibles=new JSONArray(response);
+                            for (int i=0;i<json_meseros_disponibles.length();i++){
+                                JSONObject jsonObject = json_meseros_disponibles.getJSONObject(i);
+                                Log.e("jsonObject2:",""+jsonObject);
+
+                                //Log.e("nombreMovies", String.valueOf(jsonObject));
+
+                                String strId = jsonObject.getString("id");
+                                String strNombre = jsonObject.getString("nombre");
+                                Log.e("idObject:",""+strId);
+                                Log.e("jsonObject2:",""+strNombre);
+
+                                listaMeserosDisponibles.add(new ListaMeserosDisponibles(strId,strNombre));
+
+                               /* String strComanda = jsonObject.getString("comanda");
+                                String strPrecio= jsonObject.getString("precio");
+                                String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
+                                String strMecero=jsonObject.getString("mecero_asignado");
+                                String strFecha_entrega = jsonObject.getString("fecha_entrega");
+                                String strFecha_final = jsonObject.getString("fecha_final");
+
+                                listaPedidosRecyclers.add(new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero));
+
+                                Log.e("pedidos",strComanda);*/
+                            }
+
+                             adapterMeserosDisponibles=new AdapterMeserosDisponibles(listaMeserosDisponibles);
+                            meceros_disponibles.setAdapter(adapterMeserosDisponibles);
+                            //recycler_movies.scrollToPosition(0);
+
+
+
+                            //recycler_movies.getChildAt(0).findViewById(R.id.contenedor).requestFocus();
+                            //bloquearMenu();
+
+
+                        } catch (JSONException e) {
+                            Log.e("errorRespuestaMovies", String.valueOf(e));
+                        }
+                        Log.e("jsonaraa:",""+json_pedido);
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+
+
+
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String,String> map = new HashMap<>();
+                map.put("id", id);
+                map.put("idSesion",idSesion);
+                return map;
+            }
+        };
+        requestQueue.add(request);
+
         listaMeceros.clear();
         String coy5[] = {"", "PAQUITO",
                 "jose",
