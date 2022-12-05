@@ -56,9 +56,9 @@ public void onBindViewHolder(@NonNull ViewHolderRecycler holder, int position) {
             public void onClick(View view)
             {
                 Toast.makeText(context,nombreMesero,Toast.LENGTH_SHORT).show();
-                editorMeseros.putString("meserosDisponibles",nombreMesero);
+                editorMeseros.putString("meserosNombres",nombreMesero);
                 editorMeseros.apply();
-                Log.e("cambio",datosMeseros.getString("meserosDisponibles","no"));
+                Log.e("cambio",datosMeseros.getString("meserosNombres","no"));
                 Log.e("index", String.valueOf(holder.getAdapterPosition()));
 
                 int posicion_tmp= holder.getAdapterPosition();

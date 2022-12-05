@@ -2,6 +2,7 @@ package com.creathor.restaurante;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,9 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -42,12 +41,13 @@ public class Estacion extends AppCompatActivity {
 
     private ExecutorService executorService;
 
-    private LinearLayout caja_lista_pedidos_recycler,caja_pedir_pedidos;
+    private LinearLayout caja_lista_pedidos_recycler,caja_pedir_pedidos,caja_lista_pedidos,caja_pedidos_espera_l,caja_recycler_pedidos,caja_lista_espera_recycler;
     private ConstraintLayout caja_asignar_mecero,caja_confirmar_mecero,caja_velo_mecero;
     private TextView pedir_pedidos,confirmar_mecero,confirmar_no,confirmar_si,texto_asignador;
     public ArrayList<SpinnerModel> listaMeceros = new ArrayList<>();
     private AdapterMeceros adapterMeceros;
-    private String seleccion_mecero,selector_pedidos,strCadena,id_pedido_actual,id_encontrada,comanda_encontrada,mesa_encontrada,precio_encontrado,fecha_encontrada,id,idSesion;
+    private String seleccion_mecero,selector_pedidos,strCadena,
+            id_pedido_actual,id_encontrada,comanda_encontrada,mesa_encontrada,precio_encontrado,fecha_encontrada, id_negocio,idSesion,meseroAsignado;
     private Estacion activity;
     private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles;
     private AdapterListaPedidos adapterListaPedidos,adapterListaEspera;
@@ -57,8 +57,9 @@ public class Estacion extends AppCompatActivity {
     private JSONArray json_pedido,json_pedido_mesero,json_meseros_disponibles;
     private Context context;
     private static String SERVIDOR_CONTROLADOR;
-    private SharedPreferences id_SesionSher,idSher;
-
+    private SharedPreferences id_SesionSher,idSher,nombreMeseroSher;
+    private SharedPreferences.Editor editorNombreMesero;
+    @SuppressLint("MissingInflatedId")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -68,6 +69,7 @@ public class Estacion extends AppCompatActivity {
         setContentView(R.layout.activity_estacion);
 
         activity = this;
+        context=this;
         SERVIDOR_CONTROLADOR = new Servidor().getIplocal();
         caja_pedir_pedidos=findViewById(R.id.caja_pedir_pedidos);
         pedir_pedidos=findViewById(R.id.pedir_pedidos);
@@ -85,6 +87,13 @@ public class Estacion extends AppCompatActivity {
         executorService= Executors.newSingleThreadExecutor();
         setListaMeceros();
 
+        caja_lista_pedidos=findViewById(R.id.caja_lista_pedidos);
+        caja_pedidos_espera_l=findViewById(R.id.caja_pedidos_espera_l);
+        caja_recycler_pedidos=findViewById(R.id.caja_recycler_pedidos);
+        Log.e("meseros2",""+editorNombreMesero);
+        caja_lista_espera_recycler=findViewById(R.id.caja_lista_espera_recycler);
+
+       /* checkModel=modeloSHER.getString("modelo","no");*/
         // pedir_pedidos_meceros();
 
         listaPedidosRecyclers=new ArrayList<>();
@@ -101,7 +110,9 @@ public class Estacion extends AppCompatActivity {
         id_SesionSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
         idSesion= id_SesionSher.getString("idSesion","no hay");
         idSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
-        id= idSher.getString("idSesion","no hay");
+        id_negocio = idSher.getString("idSesion","no hay");
+
+
 
         pedir_pedidos.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,7 +123,7 @@ public class Estacion extends AppCompatActivity {
                     @Override
                     public void run() {
                         pedir_pedidos();
-                        Log.e("id",""+id);
+                        Log.e("id",""+ id_negocio);
                         Log.e("idEstacion",""+idSesion);
 
 
@@ -129,9 +140,13 @@ public class Estacion extends AppCompatActivity {
         confirmar_mecero.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                nombreMeseroSher=getSharedPreferences("meserosDisponibles",context.MODE_PRIVATE);
+                Log.e("mesero1",""+nombreMeseroSher);
+                meseroAsignado=nombreMeseroSher.getString("meserosNombres","nohaymesero");
+                Log.e("mesero2",""+meseroAsignado);
                 caja_velo_mecero.setVisibility(view.VISIBLE);
                 caja_confirmar_mecero.setVisibility(View.VISIBLE);
-                texto_asignador.setText("desea asingar a "+" "+seleccion_mecero+" "+"a esta mesa");
+                texto_asignador.setText("desea asingar a "+" "+meseroAsignado+" "+"a esta mesa");
             }
         });
         confirmar_no.setOnClickListener(new View.OnClickListener() {
@@ -151,7 +166,7 @@ public class Estacion extends AppCompatActivity {
                     if(id_tmp.equals(id_pedido_actual)){
 
                         Log.e("id_encontrada","en ciclo "+i);
-                        listaPedidosRecyclers.get(i).setMecero_asignado(seleccion_mecero);
+                        listaPedidosRecyclers.get(i).setMecero_asignado(meseroAsignado);
 
 
                         id_encontrada=listaPedidosRecyclers.get(i).getId();
@@ -169,7 +184,7 @@ public class Estacion extends AppCompatActivity {
                         Log.e("mecero",""+seleccion_mecero);
 
 
-                        listaPedidosAsignados.add( new ListaPedidosRecycler(id_encontrada,mesa_encontrada,comanda_encontrada,precio_encontrado,fecha_encontrada,seleccion_mecero));
+                        listaPedidosAsignados.add( new ListaPedidosRecycler(id_encontrada,mesa_encontrada,comanda_encontrada,precio_encontrado,fecha_encontrada,meseroAsignado));
                         Log.e("listaNueva",""+comanda_encontrada);
                         listaPedidosRecyclers.remove(i);
                         caja_asignar_mecero.setVisibility(View.GONE);
@@ -178,7 +193,7 @@ public class Estacion extends AppCompatActivity {
                         executorService.execute(new Runnable() {
                             @Override
                             public void run() {
-                                enviar_pedido_cocina();
+                            /*    enviar_pedido_cocina();*/
                                 Log.e("entnedi_señor_calamardo","y esto igual");
                             }
                         });
@@ -192,7 +207,20 @@ public class Estacion extends AppCompatActivity {
         });
 
 
-
+        caja_pedidos_espera_l.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                caja_recycler_pedidos.setVisibility(View.GONE);
+                caja_lista_espera_recycler.setVisibility(View.VISIBLE);
+            }
+        });
+        caja_lista_pedidos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                caja_recycler_pedidos.setVisibility(View.VISIBLE);
+                caja_lista_espera_recycler.setVisibility(View.GONE);
+            }
+        });
 
     }
     public void pedir_pedidos()
@@ -261,7 +289,7 @@ public class Estacion extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String,String> map = new HashMap<>();
-                map.put("id", id);
+                map.put("id", id_negocio);
                 map.put("idSesion",idSesion);
                 return map;
             }
@@ -392,6 +420,7 @@ public class Estacion extends AppCompatActivity {
 
                                 listaMeserosDisponibles.add(new ListaMeserosDisponibles(strId,strNombre));
 
+                                Log.e("Nombresher",""+meseroAsignado);
                                /* String strComanda = jsonObject.getString("comanda");
                                 String strPrecio= jsonObject.getString("precio");
                                 String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
@@ -433,26 +462,14 @@ public class Estacion extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String,String> map = new HashMap<>();
-                map.put("id", id);
+                map.put("id", id_negocio);
                 map.put("idSesion",idSesion);
                 return map;
             }
         };
         requestQueue.add(request);
 
-        listaMeceros.clear();
-        String coy5[] = {"", "PAQUITO",
-                "jose",
-                "kuko",
-                "kizzy"};
-        for (int i=0; i<coy5.length;i++)
-        {
-            final SpinnerModel sched = new SpinnerModel();
-            sched.ponerNombre(coy5[i]);
-            //sched.ponerImagen("spinner"+i);
-            sched.ponerImagen("spi_"+i);
-            listaMeceros.add(sched);
-        }
+
     }
 
     public void aceptar_pedido(String id_pedido){
@@ -462,10 +479,10 @@ public class Estacion extends AppCompatActivity {
         Log.e("id_activyty",""+id_pedido);
 
     }
-    public void enviar_pedido_cocina()
+    public void actualizar_pedido_cliente()
     {
         RequestQueue requestQueue= Volley.newRequestQueue(this);
-        StringRequest request = new StringRequest(Request.Method.POST,  SERVIDOR_CONTROLADOR+"registro.php",
+        StringRequest request = new StringRequest(Request.Method.POST,  SERVIDOR_CONTROLADOR+"actualizar_pedido_cliente.php",
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -485,12 +502,10 @@ public class Estacion extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String,String> map = new HashMap<>();
 
-                map.put("nombres",id_encontrada);
-                map.put("apellidos",mesa_encontrada);
-                map.put("telefono",comanda_encontrada);
-                map.put("email",precio_encontrado);
-                map.put("password",fecha_encontrada);
-                map.put("fecha",seleccion_mecero);
+                map.put("id_negocio",id_negocio);
+                map.put("id",id_encontrada);
+                map.put("fecha_ingreso",fecha_encontrada);
+                map.put("meseroAsignado",meseroAsignado);
 
                 return map;
             }
