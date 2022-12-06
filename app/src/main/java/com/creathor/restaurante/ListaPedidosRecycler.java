@@ -27,7 +27,7 @@ public class ListaPedidosRecycler extends AppCompatActivity {
 
 
 
-    public void setId(String id) {
+    public void setId(String id)                               {
         this.id = id;
     }
     public void setMesa(String mesa) {

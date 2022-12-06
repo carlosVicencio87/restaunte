@@ -193,7 +193,7 @@ public class Estacion extends AppCompatActivity {
                         executorService.execute(new Runnable() {
                             @Override
                             public void run() {
-                            /*    enviar_pedido_cocina();*/
+                                actualizar_pedido_cliente();
                                 Log.e("entnedi_señor_calamardo","y esto igual");
                             }
                         });
@@ -234,10 +234,10 @@ public class Estacion extends AppCompatActivity {
 
                         String limpio=response;
                         Log.e("jsonObject:",""+response);
-                        Log.e("jsonObject:",""+limpio);
+                        Log.e("jsonObject2222:",""+limpio);
 
 
-                        JSONArray jsonArray = null;
+
                         try {
 
                             json_pedido=new JSONArray(response);
@@ -251,7 +251,7 @@ public class Estacion extends AppCompatActivity {
                                 String strComanda = jsonObject.getString("comanda");
                                 String strPrecio= jsonObject.getString("precio");
                                 String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
-                                String strMecero=jsonObject.getString("mecero_asignado");
+                                String strMecero=jsonObject.getString("meseroAsignado");
                                 String strFecha_entrega = jsonObject.getString("fecha_entrega");
                                 String strFecha_final = jsonObject.getString("fecha_final");
 
@@ -273,7 +273,7 @@ public class Estacion extends AppCompatActivity {
                         } catch (JSONException e) {
                             Log.e("errorRespuestaMovies", String.valueOf(e));
                         }
-                        Log.e("jsonaraa:",""+json_pedido);
+                        Log.e("jsonapedidos:",""+json_pedido);
                     }
                 },
                 new Response.ErrorListener() {

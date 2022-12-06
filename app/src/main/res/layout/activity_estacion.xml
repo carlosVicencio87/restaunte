@@ -96,7 +96,9 @@
             android:layout_height="match_parent"
             android:gravity="top"
             android:orientation="vertical"
-            android:layout_margin="5dp">
+            android:layout_margin="5dp"
+            android:visibility="visible"
+            >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -110,7 +112,6 @@
                     android:layout_marginBottom="10dp"
 
                     android:gravity="center"
-                    android:hint="@string/texto2"
                     android:textColor="@color/black"
                     android:textSize="30dp" />
             </LinearLayout>
