@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="493dp"
     android:background="@color/black"
     android:gravity="center"
     android:orientation="vertical">
@@ -204,9 +204,41 @@
                 android:gravity="center"
                 android:textSize="20dp"/>
         </LinearLayout>
-        </LinearLayout>
 
+        </LinearLayout>
         <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:orientation="horizontal"
+            android:layout_weight="1">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="Id de mecero asignado:"
+                    android:gravity="center"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:gravity="center"
+                android:visibility="visible"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/id_mesero"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="id meccero asigando"
+                    android:gravity="center"
+                    android:textSize="20dp"/>
+            </LinearLayout>
+        </LinearLayout>
+            <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:gravity="center"

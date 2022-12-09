@@ -17,7 +17,7 @@ private ArrayList<ListaPedidosRecycler> pedidosEsperarecycler;
         ViewHolderRecycler viewholderListaPedidosEspera;
 private  RecyclerView recyclerView;
 private Context context;
-private String id,mesa,comanda,precio,fecha_ingreso,mecero_asignado,fecha_final;
+private String id,mesa,comanda,precio,fecha_ingreso,mecero_asignado,fecha_final,id_mesero;
 private TextView aceptar_pedido;
 private AdapterListaPedidos activity;
 
@@ -44,6 +44,7 @@ public void onBindViewHolder(@NonNull AdapterListaPedidosESPERA.ViewHolderRecycl
         precio= pedidosEsperarecycler.get(position).getPrecio();
         fecha_ingreso= pedidosEsperarecycler.get(position).getFecha_ingreso();
         mecero_asignado= pedidosEsperarecycler.get(position).getMecero_asignado();
+
        // fecha_final= pedidosrecycler.get(position).getFecha_final();
 
 
@@ -54,7 +55,7 @@ public void onBindViewHolder(@NonNull AdapterListaPedidosESPERA.ViewHolderRecycl
         holder.comand.setText(comanda);
         holder.price.setText(precio);
         holder.date_star.setText(fecha_ingreso);
-       holder.mecer_asigned.setText(mecero_asignado);
+        holder.mecer_asigned.setText(mecero_asignado);
         //holder.date_end.setText(fecha_final);
 
 
@@ -72,7 +73,7 @@ public int getItemCount(){
 
         }
 public class ViewHolderRecycler extends RecyclerView.ViewHolder {
-    TextView id_food,mes,comand,price,date_star,date_entrega,date_end,acept_pedido,rech_pedido,mecer_asigned;
+    TextView id_food,mes,comand,price,date_star,date_entrega,date_end,acept_pedido,rech_pedido,mecer_asigned,id_meser;
 
 
     public ViewHolderRecycler(View itemView) {
@@ -87,6 +88,7 @@ public class ViewHolderRecycler extends RecyclerView.ViewHolder {
         date_entrega =(TextView)itemView.findViewById(R.id.fecha_entrega);
         date_end =(TextView)itemView.findViewById(R.id.fecha_final);
         mecer_asigned =(TextView)itemView.findViewById(R.id.mecero_asignado);
+        id_meser=itemView.findViewById(R.id.id_mesero);
 
 
 

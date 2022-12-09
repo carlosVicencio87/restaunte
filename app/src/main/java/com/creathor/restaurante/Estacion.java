@@ -47,7 +47,7 @@ public class Estacion extends AppCompatActivity {
     public ArrayList<SpinnerModel> listaMeceros = new ArrayList<>();
     private AdapterMeceros adapterMeceros;
     private String seleccion_mecero,selector_pedidos,strCadena,
-            id_pedido_actual,id_encontrada,comanda_encontrada,mesa_encontrada,precio_encontrado,fecha_encontrada, id_negocio,idSesion,meseroAsignado;
+            id_pedido_actual,id_encontrada,comanda_encontrada,mesa_encontrada,precio_encontrado,fecha_encontrada, id_negocio,idSesion,meseroAsignado,id_mesero;
     private Estacion activity;
     private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles;
     private AdapterListaPedidos adapterListaPedidos,adapterListaEspera;
@@ -57,7 +57,7 @@ public class Estacion extends AppCompatActivity {
     private JSONArray json_pedido,json_pedido_mesero,json_meseros_disponibles;
     private Context context;
     private static String SERVIDOR_CONTROLADOR;
-    private SharedPreferences id_SesionSher,idSher,nombreMeseroSher;
+    private SharedPreferences id_SesionSher,idSher,nombreMeseroSher,id_meseroSher;
     private SharedPreferences.Editor editorNombreMesero;
     @SuppressLint("MissingInflatedId")
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,6 +143,9 @@ public class Estacion extends AppCompatActivity {
                 nombreMeseroSher=getSharedPreferences("meserosDisponibles",context.MODE_PRIVATE);
                 Log.e("mesero1",""+nombreMeseroSher);
                 meseroAsignado=nombreMeseroSher.getString("meserosNombres","nohaymesero");
+                id_meseroSher=getSharedPreferences("meserosDisponibles",context.MODE_PRIVATE);
+                id_mesero=id_meseroSher.getString("idMesero","nohaymesero");
+
                 Log.e("mesero2",""+meseroAsignado);
                 caja_velo_mecero.setVisibility(view.VISIBLE);
                 caja_confirmar_mecero.setVisibility(View.VISIBLE);
@@ -168,6 +171,7 @@ public class Estacion extends AppCompatActivity {
                         Log.e("id_encontrada","en ciclo "+i);
                         listaPedidosRecyclers.get(i).setMecero_asignado(meseroAsignado);
 
+                        listaPedidosRecyclers.get(i).setMecero_asignado(id_mesero);
 
                         id_encontrada=listaPedidosRecyclers.get(i).getId();
                         mesa_encontrada=listaPedidosRecyclers.get(i).getMesa();
@@ -181,10 +185,12 @@ public class Estacion extends AppCompatActivity {
                         Log.e("comanda",""+comanda_encontrada);
                         Log.e("precio",""+precio_encontrado);
                         Log.e("fecha",""+fecha_encontrada);
-                        Log.e("mecero",""+seleccion_mecero);
+
+                        Log.e("mesero",""+meseroAsignado);
+                        Log.e("id_mesero",""+id_mesero);
 
 
-                        listaPedidosAsignados.add( new ListaPedidosRecycler(id_encontrada,mesa_encontrada,comanda_encontrada,precio_encontrado,fecha_encontrada,meseroAsignado));
+                        listaPedidosAsignados.add( new ListaPedidosRecycler(id_encontrada,mesa_encontrada,comanda_encontrada,precio_encontrado,fecha_encontrada,meseroAsignado,id_mesero));
                         Log.e("listaNueva",""+comanda_encontrada);
                         listaPedidosRecyclers.remove(i);
                         caja_asignar_mecero.setVisibility(View.GONE);
@@ -252,10 +258,12 @@ public class Estacion extends AppCompatActivity {
                                 String strPrecio= jsonObject.getString("precio");
                                 String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
                                 String strMecero=jsonObject.getString("meseroAsignado");
+                                String strid_mesero=jsonObject.getString("id_mesero");
+
                                 String strFecha_entrega = jsonObject.getString("fecha_entrega");
                                 String strFecha_final = jsonObject.getString("fecha_final");
 
-                                listaPedidosRecyclers.add(new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero));
+                                listaPedidosRecyclers.add(new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero,strid_mesero));
 
                                 Log.e("pedidos",strComanda);
                             }
@@ -506,6 +514,7 @@ public class Estacion extends AppCompatActivity {
                 map.put("id",id_encontrada);
                 map.put("fecha_ingreso",fecha_encontrada);
                 map.put("meseroAsignado",meseroAsignado);
+                map.put("id_mesero",id_mesero);
 
                 return map;
             }
