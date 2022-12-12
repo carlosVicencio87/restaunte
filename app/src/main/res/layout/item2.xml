@@ -32,6 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="id"
+                    android:textColor="@color/black"
                     android:gravity="center"
                     android:textSize="20dp"/>
             </LinearLayout>
@@ -45,6 +46,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="id"
+                    android:textColor="@color/black"
+
                     android:gravity="center"
                     android:textSize="20dp"/>
             </LinearLayout>
@@ -63,6 +66,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:text="Mesa:"
+                    android:textColor="@color/black"
+
                     android:gravity="center"
                     android:textSize="20dp"/>
             </LinearLayout>
@@ -73,6 +78,8 @@
                 android:layout_weight="1">
                 <TextView
                     android:id="@+id/mesa"
+                    android:textColor="@color/black"
+
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:text="mesa"
@@ -94,6 +101,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:text="Comanda:"
+                    android:textColor="@color/black"
+
                     android:gravity="center"
                     android:textSize="20dp"/>
             </LinearLayout>
@@ -104,6 +113,8 @@
                 android:layout_weight="1">
                 <TextView
                     android:id="@+id/comanda"
+                    android:textColor="@color/black"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="comanda"
@@ -125,6 +136,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
                     android:text="Precio:"
+                    android:textColor="@color/black"
+
                     android:gravity="center"
                     android:textSize="20dp"/>
             </LinearLayout>
@@ -135,6 +148,8 @@
             android:layout_weight="1">
             <TextView
                 android:id="@+id/precio"
+                android:textColor="@color/black"
+
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="precio"
@@ -155,6 +170,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
+                    android:textColor="@color/black"
+
                     android:text="Fecha de ingreso:"
                     android:gravity="center"
                     android:textSize="20dp"/>
@@ -169,6 +186,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="fecha ingreso"
+                android:textColor="@color/black"
+
                 android:gravity="center"
                 android:textSize="20dp"/>
         </LinearLayout>
@@ -186,6 +205,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
+                    android:textColor="@color/black"
+
                     android:text="Mecero asignado:"
                     android:gravity="center"
                     android:textSize="20dp"/>
@@ -201,6 +222,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mecero asignado"
+                android:textColor="@color/black"
+
                 android:gravity="center"
                 android:textSize="20dp"/>
         </LinearLayout>
@@ -221,6 +244,8 @@
                     android:layout_height="30dp"
                     android:text="Id de mecero asignado:"
                     android:gravity="center"
+                    android:textColor="@color/black"
+
                     android:textSize="20dp"/>
             </LinearLayout>
             <LinearLayout
@@ -235,6 +260,8 @@
                     android:layout_height="wrap_content"
                     android:text="id meccero asigando"
                     android:gravity="center"
+                    android:textColor="@color/black"
+
                     android:textSize="20dp"/>
             </LinearLayout>
         </LinearLayout>
@@ -247,22 +274,16 @@
             <TextView
                 android:id="@+id/aceptar_pedido"
                 android:layout_width="120dp"
-                android:layout_height="30dp"
-                android:text="aceptar pedido"
+                android:layout_height="70dp"
+                android:text="Esperando confirmacion de mecero...."
                 android:gravity="center"
                 android:textSize="15dp"
+                android:textColor="@color/black"
+
                 android:background="@drawable/borde"
                 android:layout_margin="15dp"
                 />
-            <TextView
-                android:id="@+id/rechazar_pedido"
-                android:layout_width="120dp"
-                android:layout_height="30dp"
-                android:text="rechazar pedido"
-                android:gravity="center"
-                android:textSize="15dp"
-                android:background="@drawable/borde"
-                android:layout_margin="15dp"/>
+
         </LinearLayout>
 
 

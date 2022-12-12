@@ -44,6 +44,7 @@ public void onBindViewHolder(@NonNull AdapterListaPedidosESPERA.ViewHolderRecycl
         precio= pedidosEsperarecycler.get(position).getPrecio();
         fecha_ingreso= pedidosEsperarecycler.get(position).getFecha_ingreso();
         mecero_asignado= pedidosEsperarecycler.get(position).getMecero_asignado();
+        id_mesero= pedidosEsperarecycler.get(position).getId_mesero();
 
        // fecha_final= pedidosrecycler.get(position).getFecha_final();
 
@@ -56,6 +57,8 @@ public void onBindViewHolder(@NonNull AdapterListaPedidosESPERA.ViewHolderRecycl
         holder.price.setText(precio);
         holder.date_star.setText(fecha_ingreso);
         holder.mecer_asigned.setText(mecero_asignado);
+        holder.id_meser.setText(id_mesero);
+
         //holder.date_end.setText(fecha_final);
 
 

@@ -50,11 +50,12 @@ public class Estacion extends AppCompatActivity {
             id_pedido_actual,id_encontrada,comanda_encontrada,mesa_encontrada,precio_encontrado,fecha_encontrada, id_negocio,idSesion,meseroAsignado,id_mesero;
     private Estacion activity;
     private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles;
-    private AdapterListaPedidos adapterListaPedidos,adapterListaEspera;
+    private AdapterListaPedidos adapterListaPedidos;
+    private AdapterListaPedidosESPERA adapterListaEspera;
     private ArrayList <ListaPedidosRecycler> listaPedidosRecyclers, listaPedidosAsignados;
     private ArrayList <ListaMeserosDisponibles> listaMeserosDisponibles;
     private AdapterMeserosDisponibles adapterMeserosDisponibles;
-    private JSONArray json_pedido,json_pedido_mesero,json_meseros_disponibles;
+    private JSONArray json_pedido,json_pedido_espera,json_meseros_disponibles;
     private Context context;
     private static String SERVIDOR_CONTROLADOR;
     private SharedPreferences id_SesionSher,idSher,nombreMeseroSher,id_meseroSher;
@@ -71,8 +72,7 @@ public class Estacion extends AppCompatActivity {
         activity = this;
         context=this;
         SERVIDOR_CONTROLADOR = new Servidor().getIplocal();
-        caja_pedir_pedidos=findViewById(R.id.caja_pedir_pedidos);
-        pedir_pedidos=findViewById(R.id.pedir_pedidos);
+
         caja_lista_pedidos_recycler=findViewById(R.id.caja_lista_pedidos_recycler);
         meceros_disponibles=findViewById(R.id.meceros_disponibles);
         lista_pedidos_recycler=findViewById(R.id.lista_pedidos_recycler);
@@ -85,7 +85,6 @@ public class Estacion extends AppCompatActivity {
         texto_asignador=findViewById(R.id.texto_asignador);
         lista_espera_recycler=findViewById(R.id.lista_espera_recycler);
         executorService= Executors.newSingleThreadExecutor();
-        setListaMeceros();
 
         caja_lista_pedidos=findViewById(R.id.caja_lista_pedidos);
         caja_pedidos_espera_l=findViewById(R.id.caja_pedidos_espera_l);
@@ -112,29 +111,10 @@ public class Estacion extends AppCompatActivity {
         idSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
         id_negocio = idSher.getString("idSesion","no hay");
 
+        pedir_pedidos();
+        pedir_pedidos_espera();
 
 
-        pedir_pedidos.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                caja_pedir_pedidos.setVisibility(View.GONE);
-                executorService.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        pedir_pedidos();
-                        Log.e("id",""+ id_negocio);
-                        Log.e("idEstacion",""+idSesion);
-
-
-                        Log.e("puto_topito","y omar igual");
-                    }
-                });
-                caja_lista_pedidos_recycler.setVisibility(view.VISIBLE);
-
-
-            }
-        });
 
 
         confirmar_mecero.setOnClickListener(new View.OnClickListener() {
@@ -170,8 +150,7 @@ public class Estacion extends AppCompatActivity {
 
                         Log.e("id_encontrada","en ciclo "+i);
                         listaPedidosRecyclers.get(i).setMecero_asignado(meseroAsignado);
-
-                        listaPedidosRecyclers.get(i).setMecero_asignado(id_mesero);
+                        listaPedidosRecyclers.get(i).setId_mesero(id_mesero);
 
                         id_encontrada=listaPedidosRecyclers.get(i).getId();
                         mesa_encontrada=listaPedidosRecyclers.get(i).getMesa();
@@ -206,7 +185,7 @@ public class Estacion extends AppCompatActivity {
                     }
                 }
                 lista_pedidos_recycler.setAdapter(adapterListaPedidos);
-                adapterListaEspera=new AdapterListaPedidos(listaPedidosAsignados);
+                adapterListaEspera=new AdapterListaPedidosESPERA(listaPedidosAsignados);
                 lista_espera_recycler.setAdapter(adapterListaEspera);
 
             }
@@ -218,6 +197,7 @@ public class Estacion extends AppCompatActivity {
             public void onClick(View view) {
                 caja_recycler_pedidos.setVisibility(View.GONE);
                 caja_lista_espera_recycler.setVisibility(View.VISIBLE);
+
             }
         });
         caja_lista_pedidos.setOnClickListener(new View.OnClickListener() {
@@ -270,6 +250,82 @@ public class Estacion extends AppCompatActivity {
 
                             adapterListaPedidos=new AdapterListaPedidos(listaPedidosRecyclers);
                             lista_pedidos_recycler.setAdapter(adapterListaPedidos);
+                            //recycler_movies.scrollToPosition(0);
+
+
+
+                            //recycler_movies.getChildAt(0).findViewById(R.id.contenedor).requestFocus();
+                            //bloquearMenu();
+
+
+                        } catch (JSONException e) {
+                            Log.e("errorRespuestaMovies", String.valueOf(e));
+                        }
+                        Log.e("jsonapedidos:",""+json_pedido);
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+
+
+
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String,String> map = new HashMap<>();
+                map.put("id", id_negocio);
+                map.put("idSesion",idSesion);
+                return map;
+            }
+        };
+        requestQueue.add(request);
+    }
+    public void pedir_pedidos_espera()
+    {
+        RequestQueue requestQueue= Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(Request.Method.POST,  SERVIDOR_CONTROLADOR+"pedidosEstacionEspera.php",
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+
+                        String limpio=response;
+                        Log.e("jsonObject:",""+response);
+                        Log.e("jsonObject2222:",""+limpio);
+
+
+
+                        try {
+
+                            json_pedido_espera=new JSONArray(response);
+                            for (int i=0;i<json_pedido_espera.length();i++){
+                                JSONObject jsonObject = json_pedido_espera.getJSONObject(i);
+
+                                //Log.e("nombreMovies", String.valueOf(jsonObject));
+
+                                String strId = jsonObject.getString("id");
+                                String strMesa = jsonObject.getString("mesa");
+                                String strComanda = jsonObject.getString("comanda");
+                                String strPrecio= jsonObject.getString("precio");
+                                String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
+                                String strMecero=jsonObject.getString("meseroAsignado");
+                                String strid_mesero=jsonObject.getString("id_mesero");
+
+                                String strFecha_entrega = jsonObject.getString("fecha_entrega");
+                                String strFecha_final = jsonObject.getString("fecha_final");
+                                listaPedidosAsignados.add( new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero,strid_mesero));
+
+
+                                Log.e("pedidos",strComanda);
+                            }
+
+                            adapterListaEspera=new AdapterListaPedidosESPERA(listaPedidosAsignados);
+                            lista_espera_recycler.setAdapter(adapterListaEspera);
+
                             //recycler_movies.scrollToPosition(0);
 
 
@@ -482,6 +538,7 @@ public class Estacion extends AppCompatActivity {
 
     public void aceptar_pedido(String id_pedido){
         id_pedido_actual=id_pedido;
+        setListaMeceros();
         caja_asignar_mecero.setVisibility(View.VISIBLE);
         caja_lista_pedidos_recycler.setVisibility(View.GONE);
         Log.e("id_activyty",""+id_pedido);

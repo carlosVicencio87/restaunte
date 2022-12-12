@@ -68,14 +68,16 @@ public void onBindViewHolder(@NonNull ViewHolderRecycler holder, int position) {
                 if (anterior!=null)
                 {
                     anterior.caja_marco_mesero.setBackgroundResource(R.color.white);
-                    anterior.name_meser.setTextColor(context.getResources().getColor(R.color.black));
+
+                    holder.id_meser.setTextColor(context.getResources().getColor(R.color.white));
+
                 }
 
                 Log.e("holdr", String.valueOf(holder));
 
                 holder.caja_marco_mesero.setBackgroundResource(R.color.black);
                 holder.name_meser.setTextColor(context.getResources().getColor(R.color.white));
-
+                holder.id_meser.setTextColor(context.getResources().getColor(R.color.white));
 
                 /*((Estacion)context).definirAlcance(nombreMesero);*/
 
