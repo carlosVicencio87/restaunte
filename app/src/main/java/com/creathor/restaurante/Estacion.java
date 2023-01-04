@@ -41,21 +41,27 @@ public class Estacion extends AppCompatActivity {
 
     private ExecutorService executorService;
 
-    private LinearLayout caja_lista_pedidos_recycler,caja_pedir_pedidos,caja_lista_pedidos,caja_pedidos_espera_l,caja_recycler_pedidos,caja_lista_espera_recycler;
-    private ConstraintLayout caja_asignar_mecero,caja_confirmar_mecero,caja_velo_mecero;
+    private LinearLayout caja_lista_pedidos_recycler,caja_pedir_pedidos,caja_lista_pedidos,caja_pedidos_espera_l,
+            caja_recycler_pedidos,caja_lista_espera_recycler;
+    private ConstraintLayout caja_asignar_mecero,caja_confirmar_mecero,caja_velo_mecero,
+            caja_detalle_pedido;
     private TextView pedir_pedidos,confirmar_mecero,confirmar_no,confirmar_si,texto_asignador;
     public ArrayList<SpinnerModel> listaMeceros = new ArrayList<>();
     private AdapterMeceros adapterMeceros;
     private String seleccion_mecero,selector_pedidos,strCadena,
-            id_pedido_actual,id_encontrada,comanda_encontrada,mesa_encontrada,precio_encontrado,fecha_encontrada, id_negocio,idSesion,meseroAsignado,id_mesero;
+            id_pedido_actual,id_encontrada,comanda_encontrada,mesa_encontrada,precio_encontrado,
+            fecha_encontrada,contenido_encontrado, id_negocio,idSesion,meseroAsignado,id_mesero,strcontenido,strIdPedido,
+            strFecha_ingreso,strMesa,strPrecio,strComanda;
     private Estacion activity;
-    private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles;
+    private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles,recycler_detalle_pedido;
     private AdapterListaPedidos adapterListaPedidos;
     private AdapterListaPedidosESPERA adapterListaEspera;
-    private ArrayList <ListaPedidosRecycler> listaPedidosRecyclers, listaPedidosAsignados;
+    private AdapterDetallePedido adapterDetallePedido;
+    private ArrayList <ListaPedidosRecyclerCorta>listaPedidosRecyclerCortas;
+    private ArrayList <ListaPedidosRecycler> listaPedidosRecyclers, listaPedidosAsignados,listaDetallesRecycler;
     private ArrayList <ListaMeserosDisponibles> listaMeserosDisponibles;
     private AdapterMeserosDisponibles adapterMeserosDisponibles;
-    private JSONArray json_pedido,json_pedido_espera,json_meseros_disponibles;
+    private JSONArray json_pedido,json_pedido_espera,json_meseros_disponibles,json_contenido_pedido;
     private Context context;
     private static String SERVIDOR_CONTROLADOR;
     private SharedPreferences id_SesionSher,idSher,nombreMeseroSher,id_meseroSher;
@@ -91,11 +97,13 @@ public class Estacion extends AppCompatActivity {
         caja_recycler_pedidos=findViewById(R.id.caja_recycler_pedidos);
         Log.e("meseros2",""+editorNombreMesero);
         caja_lista_espera_recycler=findViewById(R.id.caja_lista_espera_recycler);
+        caja_detalle_pedido=findViewById(R.id.caja_detalle_pedido);
+        recycler_detalle_pedido=findViewById(R.id.recycler_detalle_pedido);
 
        /* checkModel=modeloSHER.getString("modelo","no");*/
         // pedir_pedidos_meceros();
 
-        listaPedidosRecyclers=new ArrayList<>();
+        listaPedidosRecyclerCortas=new ArrayList<>();
         lista_pedidos_recycler.setLayoutManager(new LinearLayoutManager(Estacion.this, LinearLayoutManager.VERTICAL, false));
         listaPedidosAsignados=new ArrayList<>();
         lista_espera_recycler.setLayoutManager(new LinearLayoutManager(Estacion.this,LinearLayoutManager.VERTICAL,false));
@@ -103,8 +111,8 @@ public class Estacion extends AppCompatActivity {
         listaMeserosDisponibles=new ArrayList<>();
         meceros_disponibles.setLayoutManager(new LinearLayoutManager(Estacion.this,LinearLayoutManager.VERTICAL,false));
 
-
-
+        listaDetallesRecycler=new ArrayList<>();
+        recycler_detalle_pedido.setLayoutManager(new LinearLayoutManager(Estacion.this,LinearLayoutManager.VERTICAL,false));
 
         id_SesionSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
         idSesion= id_SesionSher.getString("idSesion","no hay");
@@ -157,6 +165,7 @@ public class Estacion extends AppCompatActivity {
                         comanda_encontrada=listaPedidosRecyclers.get(i).getComanda();
                         precio_encontrado=listaPedidosRecyclers.get(i).getPrecio();
                         fecha_encontrada=listaPedidosRecyclers.get(i).getFecha_ingreso();
+                        contenido_encontrado=listaPedidosRecyclers.get(i).getContenido();
 
 
                         Log.e("id",""+id_encontrada);
@@ -168,9 +177,9 @@ public class Estacion extends AppCompatActivity {
                         Log.e("mesero",""+meseroAsignado);
                         Log.e("id_mesero",""+id_mesero);
 
-
-                        listaPedidosAsignados.add( new ListaPedidosRecycler(id_encontrada,mesa_encontrada,comanda_encontrada,precio_encontrado,fecha_encontrada,meseroAsignado,id_mesero));
-                        Log.e("listaNueva",""+comanda_encontrada);
+/*
+                        listaPedidosAsignados.add( new ListaPedidosRecycler(id_encontrada,mesa_encontrada,comanda_encontrada,precio_encontrado,fecha_encontrada,meseroAsignado,id_mesero,contenido_encontrado));
+                        Log.e("listaNueva",""+comanda_encontrada);*/
                         listaPedidosRecyclers.remove(i);
                         caja_asignar_mecero.setVisibility(View.GONE);
                         caja_confirmar_mecero.setVisibility(View.GONE);
@@ -184,9 +193,9 @@ public class Estacion extends AppCompatActivity {
                         });
                     }
                 }
-                lista_pedidos_recycler.setAdapter(adapterListaPedidos);
+             /*   lista_pedidos_recycler.setAdapter(adapterListaPedidos);
                 adapterListaEspera=new AdapterListaPedidosESPERA(listaPedidosAsignados);
-                lista_espera_recycler.setAdapter(adapterListaEspera);
+                lista_espera_recycler.setAdapter(adapterListaEspera);*/
 
             }
         });
@@ -221,43 +230,27 @@ public class Estacion extends AppCompatActivity {
                         String limpio=response;
                         Log.e("jsonObject:",""+response);
                         Log.e("jsonObject2222:",""+limpio);
-
-
-
                         try {
 
                             json_pedido=new JSONArray(response);
                             for (int i=0;i<json_pedido.length();i++){
                                 JSONObject jsonObject = json_pedido.getJSONObject(i);
-
                                 //Log.e("nombreMovies", String.valueOf(jsonObject));
-
-                                String strId = jsonObject.getString("id");
+                                strIdPedido = jsonObject.getString("id");
                                 String strMesa = jsonObject.getString("mesa");
                                 String strComanda = jsonObject.getString("comanda");
                                 String strPrecio= jsonObject.getString("precio");
                                 String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
-                                String strMecero=jsonObject.getString("meseroAsignado");
-                                String strid_mesero=jsonObject.getString("id_mesero");
 
-                                String strFecha_entrega = jsonObject.getString("fecha_entrega");
-                                String strFecha_final = jsonObject.getString("fecha_final");
-
-                                listaPedidosRecyclers.add(new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero,strid_mesero));
-
-                                Log.e("pedidos",strComanda);
+                             /*   strcontenido=jsonObject.getString("contenido");*/
+                                listaPedidosRecyclerCortas.add(new ListaPedidosRecyclerCorta(strIdPedido,strMesa,strComanda,strPrecio,strFecha_ingreso));
+                                Log.e("pedidos",strIdPedido);
                             }
-
-                            adapterListaPedidos=new AdapterListaPedidos(listaPedidosRecyclers);
+                            adapterListaPedidos=new AdapterListaPedidos(listaPedidosRecyclerCortas);
                             lista_pedidos_recycler.setAdapter(adapterListaPedidos);
                             //recycler_movies.scrollToPosition(0);
-
-
-
                             //recycler_movies.getChildAt(0).findViewById(R.id.contenedor).requestFocus();
                             //bloquearMenu();
-
-
                         } catch (JSONException e) {
                             Log.e("errorRespuestaMovies", String.valueOf(e));
                         }
@@ -265,14 +258,10 @@ public class Estacion extends AppCompatActivity {
                     }
                 },
                 new Response.ErrorListener() {
-
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
                     }
-
-
-
                 }){
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
@@ -292,13 +281,9 @@ public class Estacion extends AppCompatActivity {
                 {
                     @Override
                     public void onResponse(String response) {
-
                         String limpio=response;
-                        Log.e("jsonObject:",""+response);
-                        Log.e("jsonObject2222:",""+limpio);
-
-
-
+                       /* Log.e("jsonObject:",""+response);
+                        Log.e("jsonObject2222:",""+limpio);*/
                         try {
 
                             json_pedido_espera=new JSONArray(response);
@@ -314,17 +299,17 @@ public class Estacion extends AppCompatActivity {
                                 String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
                                 String strMecero=jsonObject.getString("meseroAsignado");
                                 String strid_mesero=jsonObject.getString("id_mesero");
-
+                                String strContenidp=jsonObject.getString("contenido");
                                 String strFecha_entrega = jsonObject.getString("fecha_entrega");
                                 String strFecha_final = jsonObject.getString("fecha_final");
-                                listaPedidosAsignados.add( new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero,strid_mesero));
+                              /*  listaPedidosAsignados.add( new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero,strid_mesero,strContenidp));
 
-
+*/
                                 Log.e("pedidos",strComanda);
                             }
 
-                            adapterListaEspera=new AdapterListaPedidosESPERA(listaPedidosAsignados);
-                            lista_espera_recycler.setAdapter(adapterListaEspera);
+                        /*    adapterListaEspera=new AdapterListaPedidosESPERA(listaPedidosAsignados);
+                            lista_espera_recycler.setAdapter(adapterListaEspera);*/
 
                             //recycler_movies.scrollToPosition(0);
 
@@ -353,89 +338,14 @@ public class Estacion extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String,String> map = new HashMap<>();
-                map.put("id", id_negocio);
+                map.put("id", strIdPedido);
                 map.put("idSesion",idSesion);
                 return map;
             }
         };
         requestQueue.add(request);
     }
-    /*public void pedir_pedidos_meceros()
-    {
-        RequestQueue requestQueue= Volley.newRequestQueue(this);
-        StringRequest request = new StringRequest(Request.Method.GET,  SERVIDOR_CONTROLADOR+"cadena_mecero.json",
-                new Response.Listener<String>()
-                {
-                    @Override
-                    public void onResponse(String response) {
 
-                        String limpio=response.replace("\\","");
-                        Log.e("jsonObject:",""+limpio);
-
-                        JSONArray jsonArray = null;
-                        try {
-
-                            json_pedido_mesero=new JSONArray(response);
-                            for (int i=0;i<json_pedido_mesero.length();i++){
-                                JSONObject jsonObject = json_pedido_mesero.getJSONObject(i);
-
-                                //Log.e("nombreMovies", String.valueOf(jsonObject));
-
-                                String strId = jsonObject.getString("id");
-                                String strMesa = jsonObject.getString("mesa");
-                                String strComanda = jsonObject.getString("comanda");
-                                String strPrecio= jsonObject.getString("precio");
-                                String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
-                                String strMecero=jsonObject.getString("mecero");
-                                //String strFecha_entrega = jsonObject.getString("fecha_entrega");
-                                //String strFecha_final = jsonObject.getString("fecha_final");
-
-                                listaPedidosAsignados.add(new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero));
-
-                                Log.e("pedidos",strComanda);
-                            }
-
-                            //adapterListaPedidos=new AdapterListaPedidos(listaPedidosAsignados);
-                            //lista_espera_recycler.setAdapter(adapterListaPedidos);
-                            //recycler_movies.scrollToPosition(0);
-
-
-
-                            //recycler_movies.getChildAt(0).findViewById(R.id.contenedor).requestFocus();
-                            //bloquearMenu();
-
-
-                        } catch (JSONException e) {
-                            Log.e("errorRespuestaMovies", String.valueOf(e));
-                        }
-                        Log.e("jsonaraa:",""+json_pedido_mesero);
-                    }
-                },
-                new Response.ErrorListener() {
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-
-
-
-                }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap<String,String> map = new HashMap<>();
-                //map.put("id_usuario",id_usuario);
-                //map.put("usuario",strUsuario);0
-                // map.put("id_sesion",id_sesion);
-                //map.put("ubicacion", strUbicacion);
-                //map.put("contacto", strContacto);
-                //map.put("ayuda", strAyuda);
-                return map;
-            }
-
-        };
-        requestQueue.add(request);
-    }*/
 
     /*public void setListaPedidos()
     {
@@ -461,12 +371,9 @@ public class Estacion extends AppCompatActivity {
                 {
                     @Override
                     public void onResponse(String response) {
-
                         String limpio=response;
                         Log.e("jsonObject:",""+response);
                         Log.e("jsonObject:",""+limpio);
-
-
                         JSONArray jsonArray = null;
                         try {
 
@@ -485,26 +392,11 @@ public class Estacion extends AppCompatActivity {
                                 listaMeserosDisponibles.add(new ListaMeserosDisponibles(strId,strNombre));
 
                                 Log.e("Nombresher",""+meseroAsignado);
-                               /* String strComanda = jsonObject.getString("comanda");
-                                String strPrecio= jsonObject.getString("precio");
-                                String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
-                                String strMecero=jsonObject.getString("mecero_asignado");
-                                String strFecha_entrega = jsonObject.getString("fecha_entrega");
-                                String strFecha_final = jsonObject.getString("fecha_final");
 
-                                listaPedidosRecyclers.add(new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero));
-
-                                Log.e("pedidos",strComanda);*/
                             }
 
                              adapterMeserosDisponibles=new AdapterMeserosDisponibles(listaMeserosDisponibles);
                             meceros_disponibles.setAdapter(adapterMeserosDisponibles);
-                            //recycler_movies.scrollToPosition(0);
-
-
-
-                            //recycler_movies.getChildAt(0).findViewById(R.id.contenedor).requestFocus();
-                            //bloquearMenu();
 
 
                         } catch (JSONException e) {
@@ -543,6 +435,108 @@ public class Estacion extends AppCompatActivity {
         caja_lista_pedidos_recycler.setVisibility(View.GONE);
         Log.e("id_activyty",""+id_pedido);
 
+    }
+    public void mostrarDetalle(String id_pedido,String fecha_ingreso,String mesa,String precio, String comanda){
+        strIdPedido=id_pedido;
+        strFecha_ingreso=fecha_ingreso;
+        strMesa=mesa;
+        strPrecio=precio;
+        strComanda=comanda;
+
+        caja_detalle_pedido.setVisibility(View.VISIBLE);
+        caja_lista_pedidos_recycler.setVisibility(View.GONE);
+        pedir_contenido_pedido();
+        /*try {
+            for (int i=0;i<json_pedido.length();i++){
+                JSONObject jsonObject = json_pedido.getJSONObject(i);
+
+                //Log.e("nombreMovies", String.valueOf(jsonObject));
+
+                String strId = jsonObject.getString("id");
+                String strMesa = jsonObject.getString("mesa");
+                String strComanda = jsonObject.getString("comanda");
+                String strPrecio= jsonObject.getString("precio");
+                String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
+                String strMecero=jsonObject.getString("meseroAsignado");
+                String strid_mesero=jsonObject.getString("id_mesero");
+
+                String strFecha_entrega = jsonObject.getString("fecha_entrega");
+                String strFecha_final = jsonObject.getString("fecha_final");
+                strcontenido=jsonObject.getString("contenido");
+
+                listaDetallesRecycler.add(new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero,strid_mesero,strcontenido));
+
+                Log.e("pedidos",strComanda);
+            }
+
+            adapterDetallePedido=new AdapterDetallePedido(listaDetallesRecycler);
+            recycler_detalle_pedido.setAdapter(adapterDetallePedido);
+            //recycler_movies.scrollToPosition(0);
+
+
+
+            //recycler_movies.getChildAt(0).findViewById(R.id.contenedor).requestFocus();
+            //bloquearMenu();
+
+
+        } catch (JSONException e) {
+            Log.e("errorRespuestaMovies", String.valueOf(e));
+        }*/
+
+    }
+    public  void pedir_contenido_pedido(){
+        RequestQueue requestQueue= Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(Request.Method.POST,  SERVIDOR_CONTROLADOR+"contenido_pedido.php",
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+
+                            json_contenido_pedido=new JSONArray(response);
+                            for (int i=0;i<json_contenido_pedido.length();i++){
+                                JSONObject jsonObject = json_contenido_pedido.getJSONObject(i);
+                                Log.e("jsonObjectcotenid",""+jsonObject);
+                                String strNombre = jsonObject.getString("nombre");
+                                String strCantidad = jsonObject.getString("cantidad");
+                                String strTotal = jsonObject.getString("total");
+                                String strPrecio2 = jsonObject.getString("precio2");
+                                String strExtras = jsonObject.getString("extras");
+                                String strNota_mesero=jsonObject.getString("nota_mesero");
+                                Log.e("jsonObject2:",""+strNombre);
+
+                                listaMeserosDisponibles.add(new ListaMeserosDisponibles(strId,strNombre));
+
+                                Log.e("Nombresher",""+meseroAsignado);
+
+                            }
+
+                            adapterMeserosDisponibles=new AdapterMeserosDisponibles(listaMeserosDisponibles);
+                            meceros_disponibles.setAdapter(adapterMeserosDisponibles);
+
+
+                        } catch (JSONException e) {
+                            Log.e("errorRespuestaMovies", String.valueOf(e));
+                        }
+                        Log.e("jsonaraa:",""+json_pedido);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("errorDeContenido:",error + "error");
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String,String> map = new HashMap<>();
+
+                Log.e("id?contenido",strIdPedido);
+                map.put("id",strIdPedido);
+                map.put("idSesion",idSesion);
+
+                return map;
+            }
+        };
+        requestQueue.add(request);
     }
     public void actualizar_pedido_cliente()
     {
