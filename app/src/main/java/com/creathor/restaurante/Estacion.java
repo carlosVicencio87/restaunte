@@ -132,9 +132,12 @@ public class Estacion extends AppCompatActivity {
         asignar_meseroView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                listaMeserosDisponibles=new ArrayList<>();
                 setListaMeceros();
+
                 caja_asignar_mecero.setVisibility(View.VISIBLE);
                 caja_lista_pedidos_recycler.setVisibility(View.GONE);
+
             }
         });
         confirmar_mecero.setOnClickListener(new View.OnClickListener() {
@@ -444,6 +447,7 @@ public class Estacion extends AppCompatActivity {
 
     public void aceptar_pedido(String id_pedido){
         id_pedido_actual=id_pedido;
+        listaMeserosDisponibles=new ArrayList<>();
         setListaMeceros();
         caja_asignar_mecero.setVisibility(View.VISIBLE);
         caja_lista_pedidos_recycler.setVisibility(View.GONE);

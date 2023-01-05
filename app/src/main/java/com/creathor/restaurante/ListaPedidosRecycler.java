@@ -11,9 +11,14 @@ public class ListaPedidosRecycler extends AppCompatActivity {
     public String getId() {
         return id;
     }
-    public String getMesa() {return mesa;}
-    public String getComanda() {return comanda;}
-    public String getPrecio() {return precio;}
+    public String getMesa() {return mesa;
+    }
+    public String getComanda() {
+        return comanda;
+    }
+    public String getPrecio() {
+        return precio;
+    }
     public String getFecha_ingreso() { return fecha_ingreso;}
     public String getNombre() { return nombre;}
     public String getCantidad() { return cantidad;}
@@ -34,8 +39,12 @@ public class ListaPedidosRecycler extends AppCompatActivity {
     public void setId(String id)                               {
         this.id = id;
     }
-    public void setMesa(String mesa) {this.mesa = mesa;}
-    public void setComanda(String comanda) {this.comanda = comanda;}
+    public void setMesa(String mesa) {
+        this.mesa = mesa;
+    }
+    public void setComanda(String comanda) {
+        this.comanda = comanda;
+    }
     public void setPrecio(String precio) { this.precio = precio; }
     public void setNombre(String nombre) {this.nombre = nombre;}
     public void setCantidad(String cantidad) {this.cantidad = cantidad;}
@@ -73,5 +82,4 @@ public class ListaPedidosRecycler extends AppCompatActivity {
         this.fecha_final=date_end;*/
 
     }
-
 }
