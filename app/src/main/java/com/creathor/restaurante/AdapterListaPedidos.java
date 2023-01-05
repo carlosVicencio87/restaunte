@@ -18,7 +18,7 @@ public class AdapterListaPedidos extends RecyclerView.Adapter<AdapterListaPedido
     ViewHolderRecycler viewholderListaPedidos;
     private  RecyclerView recyclerView;
     private Context context;
-    private String id,mesa,comanda,precio,fecha_ingreso,mecero_asignado,fecha_entrega,fecha_final;
+    private String id,mesa,comanda,precio,fecha_ingreso,mecero_asignado,id_mesero,estado,fecha_entrega,fecha_final;
     private TextView aceptar_pedido;
     private AdapterListaPedidos activity;
     private  LinearLayout caja_mecero_asignado;
@@ -45,7 +45,8 @@ public class AdapterListaPedidos extends RecyclerView.Adapter<AdapterListaPedido
         comanda= pedidosrecycler.get(position).getComanda();
         precio= pedidosrecycler.get(position).getPrecio();
         fecha_ingreso= pedidosrecycler.get(position).getFecha_ingreso();
-
+        mecero_asignado=pedidosrecycler.get(position).getMecero_asignado();
+        id_mesero=pedidosrecycler.get(position).getId_mesero();
         /*fecha_entrega= pedidosrecycler.get(position).getFecha_entrega();
         fecha_final= pedidosrecycler.get(position).getFecha_final();*/
 
@@ -96,9 +97,11 @@ public class AdapterListaPedidos extends RecyclerView.Adapter<AdapterListaPedido
                 mesa=pedidosrecycler.get(posiTion2).getMesa();
                 precio=pedidosrecycler.get(posiTion2).getPrecio();
                 comanda=pedidosrecycler.get(posiTion2).getComanda();
-
-                Log.e("id","2"+id);
-                ((Estacion)context).mostrarDetalle(id,fecha_ingreso,mesa,precio,comanda);
+                mecero_asignado=pedidosrecycler.get(posiTion2).getMecero_asignado();
+                id_mesero=pedidosrecycler.get(posiTion2).getId_mesero();
+                estado=pedidosrecycler.get(posiTion2).getEstado();
+            Log.e("id","2"+id);
+                ((Estacion)context).mostrarDetalle(id,fecha_ingreso,mesa,precio,comanda,mecero_asignado,id_mesero,estado);
 
             }
         });
@@ -132,7 +135,6 @@ public class AdapterListaPedidos extends RecyclerView.Adapter<AdapterListaPedido
             box_decisiones = (LinearLayout) itemView.findViewById(R.id.caja_decisiones);
             box_preparando = (LinearLayout) itemView.findViewById(R.id.caja_preparando);
             view_detalle_pedido=itemView.findViewById(R.id.ver_detalle_pedido);
-
 
         }
     }

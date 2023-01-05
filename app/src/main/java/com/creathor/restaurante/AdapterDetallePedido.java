@@ -18,7 +18,7 @@ public class AdapterDetallePedido extends RecyclerView.Adapter<AdapterDetallePed
     AdapterDetallePedido.ViewHolderRecycler viewholderDetallePedidos;
     private  RecyclerView recyclerView;
     private Context context;
-    private String id,mesa,comanda,precio,fecha_ingreso,mecero_asignado,fecha_entrega,fecha_final;
+    private String id,nombre,cantidad,total,precio2,extra,nota_mesero,mecero_asignado,fecha_entrega,fecha_final;
     private TextView aceptar_pedido;
     private AdapterDetallePedido activity;
     private LinearLayout caja_mecero_asignado;
@@ -40,23 +40,26 @@ public class AdapterDetallePedido extends RecyclerView.Adapter<AdapterDetallePed
     @Override
     public void onBindViewHolder(@NonNull AdapterDetallePedido.ViewHolderRecycler holder, int position) {
         viewholderDetallePedidos =holder;
-        id = detalleRecycler.get(position).getId();
-        mesa= detalleRecycler.get(position).getMesa();
-        comanda= detalleRecycler.get(position).getComanda();
-        precio= detalleRecycler.get(position).getPrecio();
-        fecha_ingreso= detalleRecycler.get(position).getFecha_ingreso();
+
+        nombre=detalleRecycler.get(position).getNombre();
+        cantidad=detalleRecycler.get(position).getCantidad();
+        total=detalleRecycler.get(position).getTotal();
+        precio2=detalleRecycler.get(position).getPrecio2();
+        extra=detalleRecycler.get(position).getExtras();
+        nota_mesero=detalleRecycler.get(position).getNota_mesero();
         /*fecha_entrega= pedidosrecycler.get(position).getFecha_entrega();
         fecha_final= pedidosrecycler.get(position).getFecha_final();*/
 
 
-        holder.id_food.setText(id);
-        holder.mes.setText(mesa);
-        holder.comand.setText(comanda);
-        holder.price.setText(precio);
-        holder.date_star.setText(fecha_ingreso);
 
+        holder.name.setText(nombre);
+        holder.details.setText(cantidad);
+        holder.totl.setText(total);
+        holder.price2.setText(precio2);
+        holder.extr.setText(extra);
+        holder.note_meser.setText(nota_mesero);
 
-        holder.acept_pedido.setOnClickListener(new View.OnClickListener() {
+        /*holder.acept_pedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int posicion=holder.getAdapterPosition();
@@ -65,7 +68,7 @@ public class AdapterDetallePedido extends RecyclerView.Adapter<AdapterDetallePed
                 ((Estacion)context).aceptar_pedido(id);
 
             }
-        });
+        });*/
 
         Log.e("meceero","1"+mecero_asignado);
 
@@ -79,15 +82,14 @@ public class AdapterDetallePedido extends RecyclerView.Adapter<AdapterDetallePed
 
     }
     public class ViewHolderRecycler extends RecyclerView.ViewHolder {
-        TextView id_food,mes,comand,price,date_star,mecer_asigned,date_entrega,date_end,acept_pedido,rech_pedido,name,details,price2,extr,note_meser;
+        TextView id_food,mes,comand,price,date_star,mecer_asigned,date_entrega,date_end,acept_pedido,rech_pedido
+                ,name,details,price2,extr,note_meser,totl;
         LinearLayout box_mecero_asignado,box_decisiones,box_preparando,view_detalle_pedido;
 
 
         public ViewHolderRecycler(View itemView) {
             super(itemView);
             id_food =(TextView)itemView.findViewById(R.id.id);
-            acept_pedido =(TextView)itemView.findViewById(R.id.aceptar_pedido);
-            rech_pedido =(TextView)itemView.findViewById(R.id.rechazar_pedido);
             mes =(TextView)itemView.findViewById(R.id.mesa);
             comand =(TextView)itemView.findViewById(R.id.comanda);
             price =(TextView)itemView.findViewById(R.id.precio);
@@ -104,6 +106,7 @@ public class AdapterDetallePedido extends RecyclerView.Adapter<AdapterDetallePed
             price2=itemView.findViewById(R.id.precio2);
             extr=itemView.findViewById(R.id.extras);
             note_meser=itemView.findViewById(R.id.nota_mesero);
+            totl=itemView.findViewById(R.id.total);
         }
     }
 
