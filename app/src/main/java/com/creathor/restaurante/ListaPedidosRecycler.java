@@ -66,16 +66,17 @@ public class ListaPedidosRecycler extends AppCompatActivity {
                                 String id_food,
                                 String mecer_asigned,String id_meser){
 
-        this.id =id_food;
-
-        this.mecero_asignado =mecer_asigned;
-        this.id_mesero=id_meser;
-
         this.nombre=name;
         this.cantidad=cant;
         this.total=totl;
         this.precio2 =price2;
         this.extras=extr;
+
+        this.id =id_food;
+
+        this.mecero_asignado =mecer_asigned;
+        this.id_mesero=id_meser;
+
         this.nota_mesero=note_meser;
 
        /* this.fecha_entrega=date_entrega;

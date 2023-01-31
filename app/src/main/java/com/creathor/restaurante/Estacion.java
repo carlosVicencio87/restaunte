@@ -125,7 +125,6 @@ public class Estacion extends AppCompatActivity {
         id_negocio = idSher.getString("idSesion","no hay");
 
         pedir_pedidos();
-        pedir_pedidos_espera();
 
 
 
@@ -219,6 +218,8 @@ public class Estacion extends AppCompatActivity {
             public void onClick(View view) {
                 caja_recycler_pedidos.setVisibility(View.GONE);
                 caja_lista_espera_recycler.setVisibility(View.VISIBLE);
+                pedir_pedidos_espera();
+
 
             }
         });
@@ -298,15 +299,15 @@ public class Estacion extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         String limpio=response;
-                       /* Log.e("jsonObject:",""+response);
-                        Log.e("jsonObject2222:",""+limpio);*/
+                       Log.e("jsonObjectEspera:",""+response);
+                        Log.e("jsonObject3333:",""+limpio);
                         try {
 
                             json_pedido_espera=new JSONArray(response);
                             for (int i=0;i<json_pedido_espera.length();i++){
                                 JSONObject jsonObject = json_pedido_espera.getJSONObject(i);
 
-                                //Log.e("nombreMovies", String.valueOf(jsonObject));
+                                Log.e("pedidoEspera", String.valueOf(jsonObject));
 
                                 String strId = jsonObject.getString("id");
                                 String strMesa = jsonObject.getString("mesa");
@@ -315,13 +316,15 @@ public class Estacion extends AppCompatActivity {
                                 String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
                                 String strMecero=jsonObject.getString("meseroAsignado");
                                 String strid_mesero=jsonObject.getString("id_mesero");
-                                String strContenidp=jsonObject.getString("contenido");
+                                String strContenido=jsonObject.getString("contenido");
                                 String strFecha_entrega = jsonObject.getString("fecha_entrega");
                                 String strFecha_final = jsonObject.getString("fecha_final");
-                              /*  listaPedidosAsignados.add( new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero,strid_mesero,strContenidp));
+                               listaPedidosAsignados.add( new ListaPedidosRecycler(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero,strid_mesero,strContenido));
 
-*/
                                 Log.e("pedidos",strComanda);
+                                Log.e("contenido",strContenido);
+                                Log.e("meseroAsignado",strMecero);
+
                             }
 
                         /*    adapterListaEspera=new AdapterListaPedidosESPERA(listaPedidosAsignados);
@@ -338,7 +341,7 @@ public class Estacion extends AppCompatActivity {
                         } catch (JSONException e) {
                             Log.e("errorRespuestaMovies", String.valueOf(e));
                         }
-                        Log.e("jsonapedidos:",""+json_pedido);
+                        Log.e("jsonapedidos3333:",""+json_pedido_espera);
                     }
                 },
                 new Response.ErrorListener() {
@@ -501,7 +504,7 @@ public class Estacion extends AppCompatActivity {
                                     String strNota_mesero=jsonObjectContenido2.getString("nota_mesero");
                                     Log.e("jsonObject2:",""+strNombre);
 
-                                    listaPedidosRecyclers.add(new ListaPedidosRecycler(strMecero_asignado,Strid_mesero,strNombre,strCantidad,strTotal,strPrecio2,strExtras,strNota_mesero,strIdPedido));
+                                    listaPedidosRecyclers.add(new ListaPedidosRecycler(strNombre,strCantidad,strTotal,strPrecio2,strExtras,strNota_mesero,strMecero_asignado,Strid_mesero,strIdPedido));
 
                                     Log.e("Nombresher",""+meseroAsignado);
                                 }
