@@ -44,8 +44,10 @@ public class Estacion extends AppCompatActivity {
     private LinearLayout caja_lista_pedidos_recycler,caja_pedir_pedidos,caja_lista_pedidos,caja_pedidos_espera_l,
             caja_recycler_pedidos,caja_lista_espera_recycler,caja_lista_cocina_recycler,caja_pedidos_espera_cocina;
     private ConstraintLayout caja_asignar_mecero,caja_confirmar_mecero,caja_velo_mecero,
-            caja_detalle_pedido,caja_detalle_pedido_espera;
-    private TextView pedir_pedidos,confirmar_mecero,confirmar_no,confirmar_si,texto_asignador,fecha_ingresoView,mesaView,precio2View,estadoView,comandaView,asignar_meseroView,fecha_ingreso_espera,mesa_espera,precio2_espera,estado_espera,comanda_espera,mecero_asignado_espera;
+            caja_detalle_pedido,caja_detalle_pedido_espera,caja_detalle_pedido_cocina;
+    private TextView pedir_pedidos,confirmar_mecero,confirmar_no,confirmar_si,texto_asignador,fecha_ingresoView,mesaView,precio2View,estadoView,comandaView,
+            asignar_meseroView,fecha_ingreso_espera,mesa_espera,precio2_espera,
+            estado_espera,comanda_espera,mecero_asignado_espera,fecha_ingreso_cocina,mesa_cocina,precio2_cocina,estado_cocina,comanda_cocina,mecero_asignado_cocina;
     public ArrayList<SpinnerModel> listaMeceros = new ArrayList<>();
     private AdapterMeceros adapterMeceros;
     private String seleccion_mecero,selector_pedidos,strCadena,
@@ -53,7 +55,8 @@ public class Estacion extends AppCompatActivity {
             fecha_encontrada,contenido_encontrado, id_negocio,idSesion,meseroAsignado,id_mesero,
             strcontenido,strIdPedido,strFecha_ingreso,strMesa,strPrecio,strComanda,strMecero_asignado,Strid_mesero,strEstado,adonde_vas;
     private Estacion activity;
-    private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles,recycler_detalle_pedido,recycler_detalle_pedido_espera,cocina_espera_recycler;
+    private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles,
+            recycler_detalle_pedido,recycler_detalle_pedido_espera,cocina_espera_recycler,recycler_detalle_pedido_cocina;
     private AdapterListaPedidos adapterListaPedidos;
     private AdapterListaPedidosESPERA adapterListaEspera;
     private AdapterDetallePedido adapterDetallePedido;
@@ -61,6 +64,8 @@ public class Estacion extends AppCompatActivity {
     private ArrayList <ListaPedidosRecyclerCorta>listaPedidosRecyclerCortas,listaPedidosAsignados,listaPedidosCocina;
     private ArrayList <ListaPedidosRecycler> listaPedidosRecyclers, listaPedidosRecyclersEspera;
     private ArrayList <ListaMeserosDisponibles> listaMeserosDisponibles;
+    private ArrayList <ListaPedidoContenidoCocina>listaPedidoContenidoCocinas;
+    private AdapterDetallePedidoCocina adapterDetallePedidoCocina;
     private AdapterMeserosDisponibles adapterMeserosDisponibles;
     private JSONArray json_pedido,json_pedido_espera,json_meseros_disponibles,json_contenido_pedido,json_pedido_cocina;
     private Context context;
@@ -101,6 +106,7 @@ public class Estacion extends AppCompatActivity {
         caja_detalle_pedido = findViewById(R.id.caja_detalle_pedido);
         recycler_detalle_pedido = findViewById(R.id.recycler_detalle_pedido);
         recycler_detalle_pedido_espera=findViewById(R.id.recycler_detalle_pedido_espera);
+        recycler_detalle_pedido_cocina=findViewById(R.id.recycler_detalle_pedido_cocina);
         fecha_ingresoView = findViewById(R.id.fecha_ingreso);
         precio2View = findViewById(R.id.precio2);
         mesaView = findViewById(R.id.mesa);
@@ -119,6 +125,14 @@ public class Estacion extends AppCompatActivity {
         caja_lista_cocina_recycler=findViewById(R.id.caja_lista_cocina_recycler);
         caja_pedidos_espera_cocina=findViewById(R.id.caja_pedidos_espera_cocina);
         cocina_espera_recycler=findViewById(R.id.cocina_espera_recycler);
+        caja_detalle_pedido_cocina=findViewById(R.id.caja_detalle_pedido_cocina);
+
+        fecha_ingreso_cocina=findViewById(R.id.fecha_ingreso_cocina);
+        mesa_cocina=findViewById(R.id.mesa_cocina);
+        precio2_cocina=findViewById(R.id.precio2_cocina);
+        estado_cocina=findViewById(R.id.estado_cocina);
+        comanda_cocina=findViewById(R.id.comanda_cocina);
+        mecero_asignado_cocina=findViewById(R.id.mecero_asignado_cocina);
        /* checkModel=modeloSHER.getString("modelo","no");*/
         // pedir_pedidos_meceros();
 
@@ -136,7 +150,8 @@ public class Estacion extends AppCompatActivity {
         recycler_detalle_pedido_espera.setLayoutManager(new LinearLayoutManager(Estacion.this,LinearLayoutManager.VERTICAL,false));
         listaPedidosCocina=new ArrayList<>();
         cocina_espera_recycler.setLayoutManager(new LinearLayoutManager(Estacion.this,LinearLayoutManager.VERTICAL,false));
-
+        listaPedidoContenidoCocinas=new ArrayList<>();
+        recycler_detalle_pedido_cocina.setLayoutManager(new LinearLayoutManager(Estacion.this,LinearLayoutManager.VERTICAL,false));
         id_SesionSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
         idSesion= id_SesionSher.getString("idSesion","no hay");
         idSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
@@ -585,7 +600,40 @@ public class Estacion extends AppCompatActivity {
         Log.e("id_activyty",""+id_pedido);
 
     }
+    public  void mostrarDetalleCocina(String id_pedido,String fecha_ingreso,String mesa,String precio, String comanda, String mecero_asignado, String id_mesero,String estado){
+        listaPedidoContenidoCocinas.clear();
+        strIdPedido=id_pedido;
+        strFecha_ingreso=fecha_ingreso;
+        strMesa=mesa;
+        strPrecio=precio;
+        strComanda=comanda;
+        strMecero_asignado=mecero_asignado;
+        strEstado=estado;
+        Strid_mesero=id_mesero;
+
+        Log.e("cocina",strIdPedido);
+        Log.e("cocina",strFecha_ingreso);
+        Log.e("cocina",strMesa);
+        Log.e("cocina",strPrecio);
+        Log.e("cocina",strComanda);
+        Log.e("cocina",strMecero_asignado);
+        Log.e("cocina",strEstado);
+        Log.e("cocina",Strid_mesero);
+
+        fecha_ingreso_cocina.setText(strFecha_ingreso);
+        mesa_cocina.setText(strMesa);
+        precio2_cocina.setText(strPrecio);
+        estado_cocina.setText(strEstado);
+        comanda_cocina.setText(strComanda);
+        mecero_asignado_cocina.setText(strMecero_asignado);
+        caja_lista_pedidos_recycler.setVisibility(View.GONE);
+        caja_detalle_pedido.setVisibility(View.GONE);
+        caja_detalle_pedido_cocina.setVisibility(View.VISIBLE);
+        adonde_vas="detalleCocina";
+        pedir_contenido_pedido_cocina();
+    }
     public void mostrarDetalle(String id_pedido,String fecha_ingreso,String mesa,String precio, String comanda, String mecero_asignado, String id_mesero,String estado){
+        listaPedidosRecyclers.clear();
         strIdPedido=id_pedido;
         strFecha_ingreso=fecha_ingreso;
         strMesa=mesa;
@@ -600,6 +648,8 @@ public class Estacion extends AppCompatActivity {
         precio2View.setText(strPrecio);
         estadoView.setText(strEstado);
         comandaView.setText(strComanda);
+        caja_detalle_pedido_cocina.setVisibility(View.GONE);
+
         caja_lista_pedidos_recycler.setVisibility(View.GONE);
         caja_detalle_pedido.setVisibility(View.VISIBLE);
         adonde_vas="detalle";
@@ -609,6 +659,7 @@ public class Estacion extends AppCompatActivity {
 
     }
     public void mostrarDetalleEspera(String id_pedido,String fecha_ingreso,String mesa,String precio, String comanda, String mecero_asignado, String id_mesero,String estado){
+        listaPedidosRecyclersEspera.clear();
         strIdPedido=id_pedido;
         strFecha_ingreso=fecha_ingreso;
         strMesa=mesa;
@@ -628,10 +679,9 @@ public class Estacion extends AppCompatActivity {
         estado_espera.setText(strEstado);
         comanda_espera.setText(strComanda);
         mecero_asignado_espera.setText(strMecero_asignado);
-        caja_detalle_pedido_espera.setVisibility(View.VISIBLE);
-        caja_lista_espera_recycler.setVisibility(View.GONE);
+        caja_detalle_pedido_cocina.setVisibility(View.GONE);
+        caja_lista_espera_recycler.setVisibility(View.VISIBLE);
         caja_lista_pedidos_recycler.setVisibility(View.GONE);
-        adonde_vas="detalleEspera";
 
         pedir_contenido_pedido_espera();
 
@@ -760,6 +810,70 @@ public class Estacion extends AppCompatActivity {
         };
         requestQueue.add(request);
     }
+    public  void pedir_contenido_pedido_cocina(){
+        RequestQueue requestQueue= Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(Request.Method.POST,  SERVIDOR_CONTROLADOR+"contenido_pedido.php",
+                new Response.Listener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+
+                            json_contenido_pedido=new JSONArray(response);
+                            for (int i=0;i<json_contenido_pedido.length();i++){
+                                JSONObject jsonObject = json_contenido_pedido.getJSONObject(i);
+                                Log.e("jsonObjectcotenidEspera",""+jsonObject);
+                                String strContenido = jsonObject.getString("contenido");
+                                JSONArray arregloObjeto=new JSONArray(strContenido);
+                                for (int i2=0;i2<arregloObjeto.length();i2++){
+                                    Log.e("objetoContenido",""+strContenido);
+                                    JSONObject jsonObjectContenido2=arregloObjeto.getJSONObject(i);
+                                    String strNombre = jsonObjectContenido2.getString("nombre");
+                                    String strCantidad = jsonObjectContenido2.getString("cantidad");
+                                    String strTotal = jsonObjectContenido2.getString("total");
+                                    String strPrecio2 = jsonObjectContenido2.getString("precio");
+                                    String strExtras = jsonObjectContenido2.getString("extras");
+                                    String strNota_mesero=jsonObjectContenido2.getString("nota_mesero");
+                                    String strEstatus=jsonObjectContenido2.getString("estatus");
+
+                                    Log.e("jsonObject2:",""+strNombre);
+
+                                    listaPedidoContenidoCocinas.add(new ListaPedidoContenidoCocina(strNombre,strCantidad,strTotal,strPrecio2,strExtras,strNota_mesero,strMecero_asignado,Strid_mesero,strIdPedido,strEstatus));
+
+                                    Log.e("Nombresher",""+meseroAsignado);
+                                }
+
+
+                            }
+
+                            adapterDetallePedidoCocina=new AdapterDetallePedidoCocina(listaPedidoContenidoCocinas);
+                            recycler_detalle_pedido_cocina.setAdapter(adapterDetallePedidoCocina);
+
+
+                        } catch (JSONException e) {
+                            Log.e("errorRespuestaMovies", String.valueOf(e));
+                        }
+                        Log.e("jsonPedidos:",""+json_pedido);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("errorDeContenido:",error + "error");
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String,String> map = new HashMap<>();
+
+                Log.e("idcontenido",strIdPedido);
+                map.put("id",strIdPedido);
+                map.put("idSesion",idSesion);
+
+                return map;
+            }
+        };
+        requestQueue.add(request);
+    }
     public void actualizar_pedido_cliente()
     {
         RequestQueue requestQueue= Volley.newRequestQueue(this);
@@ -827,6 +941,19 @@ public class Estacion extends AppCompatActivity {
 
             adonde_vas="pedidoAsignado";
             Log.e("adonde",adonde_vas);
+        }
+        if(adonde_vas=="detalleCocina"){
+            caja_detalle_pedido_cocina.setVisibility(View.GONE);
+            caja_pedidos_espera_cocina.setVisibility(View.VISIBLE);
+            caja_lista_pedidos_recycler.setVisibility(View.VISIBLE);
+
+        }
+        if(adonde_vas=="pedidoCocina"){
+            caja_recycler_pedidos.setVisibility(View.GONE);
+            caja_lista_espera_recycler.setVisibility(View.VISIBLE);
+            caja_lista_cocina_recycler.setVisibility(View.GONE);
+            adonde_vas="pedidoAsignado";
+
         }
     }
 }

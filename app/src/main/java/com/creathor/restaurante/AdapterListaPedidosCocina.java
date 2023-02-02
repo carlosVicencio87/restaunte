@@ -64,7 +64,7 @@ public class AdapterListaPedidosCocina  extends RecyclerView.Adapter<AdapterList
 
 
         //holder.list_pedidos.setText(lista_pedidos);
-       /* holder.view_detalle_pedido.setOnClickListener(new View.OnClickListener() {
+        holder.view_detalle_pedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int posiTion2=holder.getAdapterPosition();
@@ -76,10 +76,10 @@ public class AdapterListaPedidosCocina  extends RecyclerView.Adapter<AdapterList
                 mecero_asignado= pedidosCocinarecycler.get(posiTion2).getMecero_asignado();
                 estado= pedidosCocinarecycler.get(posiTion2).getEstado();
                 Log.e("id","2"+id);
-                ((Estacion)context).mostrarDetalleEspera(id,fecha_ingreso,mesa,precio,comanda,mecero_asignado,id_mesero,estado);
+                ((Estacion)context).mostrarDetalleCocina(id,fecha_ingreso,mesa,precio,comanda,mecero_asignado,id_mesero,estado);
 
             }
-        });*/
+        });
     }
     public void pedidos_espera(String id_pedido){
 
