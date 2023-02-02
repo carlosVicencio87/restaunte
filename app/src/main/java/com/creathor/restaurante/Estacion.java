@@ -53,15 +53,16 @@ public class Estacion extends AppCompatActivity {
             fecha_encontrada,contenido_encontrado, id_negocio,idSesion,meseroAsignado,id_mesero,
             strcontenido,strIdPedido,strFecha_ingreso,strMesa,strPrecio,strComanda,strMecero_asignado,Strid_mesero,strEstado,adonde_vas;
     private Estacion activity;
-    private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles,recycler_detalle_pedido,recycler_detalle_pedido_espera;
+    private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles,recycler_detalle_pedido,recycler_detalle_pedido_espera,cocina_espera_recycler;
     private AdapterListaPedidos adapterListaPedidos;
     private AdapterListaPedidosESPERA adapterListaEspera;
     private AdapterDetallePedido adapterDetallePedido;
-    private ArrayList <ListaPedidosRecyclerCorta>listaPedidosRecyclerCortas,listaPedidosAsignados;
+    private AdapterListaPedidosCocina adapterListaPedidosCocina;
+    private ArrayList <ListaPedidosRecyclerCorta>listaPedidosRecyclerCortas,listaPedidosAsignados,listaPedidosCocina;
     private ArrayList <ListaPedidosRecycler> listaPedidosRecyclers, listaPedidosRecyclersEspera;
     private ArrayList <ListaMeserosDisponibles> listaMeserosDisponibles;
     private AdapterMeserosDisponibles adapterMeserosDisponibles;
-    private JSONArray json_pedido,json_pedido_espera,json_meseros_disponibles,json_contenido_pedido;
+    private JSONArray json_pedido,json_pedido_espera,json_meseros_disponibles,json_contenido_pedido,json_pedido_cocina;
     private Context context;
     private static String SERVIDOR_CONTROLADOR;
     private SharedPreferences id_SesionSher,idSher,nombreMeseroSher,id_meseroSher;
@@ -117,6 +118,7 @@ public class Estacion extends AppCompatActivity {
         mecero_asignado_espera=findViewById(R.id.mecero_asignado_espera);
         caja_lista_cocina_recycler=findViewById(R.id.caja_lista_cocina_recycler);
         caja_pedidos_espera_cocina=findViewById(R.id.caja_pedidos_espera_cocina);
+        cocina_espera_recycler=findViewById(R.id.cocina_espera_recycler);
        /* checkModel=modeloSHER.getString("modelo","no");*/
         // pedir_pedidos_meceros();
 
@@ -132,6 +134,9 @@ public class Estacion extends AppCompatActivity {
         recycler_detalle_pedido.setLayoutManager(new LinearLayoutManager(Estacion.this,LinearLayoutManager.VERTICAL,false));
         listaPedidosRecyclersEspera=new ArrayList<>();
         recycler_detalle_pedido_espera.setLayoutManager(new LinearLayoutManager(Estacion.this,LinearLayoutManager.VERTICAL,false));
+        listaPedidosCocina=new ArrayList<>();
+        cocina_espera_recycler.setLayoutManager(new LinearLayoutManager(Estacion.this,LinearLayoutManager.VERTICAL,false));
+
         id_SesionSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
         idSesion= id_SesionSher.getString("idSesion","no hay");
         idSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
@@ -262,9 +267,14 @@ public class Estacion extends AppCompatActivity {
         caja_pedidos_espera_cocina.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                listaPedidosCocina.clear();
+
                 caja_recycler_pedidos.setVisibility(View.GONE);
                 caja_lista_espera_recycler.setVisibility(View.GONE);
                 caja_lista_cocina_recycler.setVisibility(View.VISIBLE);
+                pedir_pedidos_cocina();
+                adonde_vas="pedidoCocina";
+
             }
         });
 
@@ -404,7 +414,83 @@ public class Estacion extends AppCompatActivity {
         };
         requestQueue.add(request);
     }
+    public void pedir_pedidos_cocina()
+    {
+        RequestQueue requestQueue= Volley.newRequestQueue(this);
+        StringRequest request = new StringRequest(Request.Method.POST,  SERVIDOR_CONTROLADOR+"pedidosEstacionCocina.php",
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        String limpio=response;
+                        Log.e("jsonObjectCocina:",""+response);
+                        Log.e("jsonObjectCocina3333:",""+limpio);
+                        try {
 
+                            json_pedido_cocina=new JSONArray(response);
+                            for (int i=0;i<json_pedido_cocina.length();i++){
+                                JSONObject jsonObject = json_pedido_cocina.getJSONObject(i);
+
+                                Log.e("pedidoEspera", String.valueOf(jsonObject));
+
+                                String strId = jsonObject.getString("id");
+                                String strMesa = jsonObject.getString("mesa");
+                                String strComanda = jsonObject.getString("comanda");
+                                String strPrecio= jsonObject.getString("precio");
+                                String strFecha_ingreso = jsonObject.getString("fecha_ingreso");
+                                String strid_mesero=jsonObject.getString("id_mesero");
+                                String strMecero=jsonObject.getString("meseroAsignado");
+                                String strEstado=jsonObject.getString("estado");
+                                String strContenido=jsonObject.getString("contenido");
+                                String strFecha_entrega = jsonObject.getString("fecha_entrega");
+                                String strFecha_final = jsonObject.getString("fecha_final");
+                                listaPedidosCocina.add( new ListaPedidosRecyclerCorta(strId,strMesa,strComanda,strPrecio,strFecha_ingreso,strMecero,strid_mesero,strEstado));
+
+                                Log.e("pedidos",strFecha_ingreso);
+                                Log.e("contenido",strMesa);
+                                Log.e("meseroAsignado",strPrecio);
+                                Log.e("meseroAsignado",strMecero);
+                                Log.e("meseroAsignado",strComanda);
+
+                            }
+
+                            adapterListaPedidosCocina=new AdapterListaPedidosCocina(listaPedidosCocina);
+                            cocina_espera_recycler.setAdapter(adapterListaPedidosCocina);
+
+                            //recycler_movies.scrollToPosition(0);
+
+
+
+                            //recycler_movies.getChildAt(0).findViewById(R.id.contenedor).requestFocus();
+                            //bloquearMenu();
+
+
+                        } catch (JSONException e) {
+                            Log.e("errorRespuestaMovies", String.valueOf(e));
+                        }
+                        Log.e("jsonapedidos3333:",""+json_pedido_espera);
+                    }
+                },
+                new Response.ErrorListener() {
+
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+
+
+
+                }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                HashMap<String,String> map = new HashMap<>();
+                map.put("id", strIdPedido);
+                map.put("idSesion",idSesion);
+                return map;
+            }
+        };
+        requestQueue.add(request);
+    }
 
     /*public void setListaPedidos()
     {
