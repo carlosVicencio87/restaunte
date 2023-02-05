@@ -59,7 +59,7 @@ public class AdapterDetallePedido extends RecyclerView.Adapter<AdapterDetallePed
         holder.extr.setText(extra);
         holder.note_meser.setText(nota_mesero);
 
-        /*holder.acept_pedido.setOnClickListener(new View.OnClickListener() {
+      /*  holder.acept_pedido.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int posicion=holder.getAdapterPosition();
