@@ -720,6 +720,10 @@ public class Estacion extends AppCompatActivity {
                                     String strTotal = jsonObjectContenido2.getString("total");
                                     String strPrecio2 = jsonObjectContenido2.getString("precio");
                                     String strExtras = jsonObjectContenido2.getString("extras");
+                                    Log.e("nombreCont:",""+strExtras);
+
+
+
                                     String strNota_mesero=jsonObjectContenido2.getString("nota_mesero");
                                     Log.e("nombreCont:",""+strNombre);
                                     Log.e("cantidaCant:",""+strCantidad);

@@ -102,22 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="60dp"
-                android:orientation="vertical"
-                android:layout_margin="6dp"
-                android:gravity="bottom"
-                android:id="@+id/caja_perfil"
-                >
-                <TextView
-                    android:layout_width="55dp"
-                    android:background="@drawable/perfil"
-                    android:layout_height="55dp"
-                    android:gravity="center"
-                    />
-            </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"

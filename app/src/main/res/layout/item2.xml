@@ -33,27 +33,29 @@
                     android:gravity="center"
                     android:layout_weight="1">
                     <TextView
+                        android:id="@+id/mecero_asignado"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="mecero asignado"
                         android:gravity="center"
-                        android:textSize="16dp"
                         android:textColor="@color/black"
-                        />
+                        android:textSize="16dp"/>
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="20dp"
-                    android:gravity="right"
-                    android:layout_weight="1">
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="right">
+
                     <TextView
                         android:id="@+id/fecha_ingreso"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="fecha ingreso"
                         android:gravity="center"
-                        android:textSize="16dp"
+                        android:text="fecha ingreso"
                         android:textColor="@color/black"
-                        />
+                        android:textSize="16dp" />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -192,23 +194,8 @@
                     android:layout_height="30dp"
                     android:gravity="center"
                     android:layout_weight="1">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black"
-                        android:text="Mecero asignado"
 
-                        android:textSize="20dp"
-                        android:layout_marginRight="14dp"
-                        />
-                    <TextView
-                        android:id="@+id/mecero_asignado"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="mecero asignado"
-                        android:gravity="center"
-                        android:textColor="@color/black"
-                        android:textSize="20dp"/>
+
                 </LinearLayout>
 
 
@@ -241,23 +228,7 @@
                     />
             </LinearLayout>
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:layout_margin="5dp">
-            <TextView
-                android:id="@+id/aceptar_pedido"
-                android:layout_width="160dp"
-                android:layout_height="70dp"
-                android:text="Esperando confirmacion de mecero...."
-                android:gravity="center"
-                android:textSize="12dp"
-                android:textColor="@color/black"
-                android:background="@drawable/borde"
-                android:layout_margin="15dp"/>
-        </LinearLayout>
+
 </LinearLayout>
 
 
