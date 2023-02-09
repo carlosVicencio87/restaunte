@@ -1,13 +1,18 @@
 package com.creathor.restaurante;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +23,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -26,6 +32,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,7 +62,7 @@ public class Estacion extends AppCompatActivity {
     private String seleccion_mecero,selector_pedidos,strCadena,
             id_pedido_actual, strIdPedido,comanda_encontrada,mesa_encontrada,precio_encontrado,
             fecha_encontrada,contenido_encontrado, id_negocio,idSesion, strMecero_asignado,id_mesero,
-            strcontenido,strFecha_ingreso,strMesa,strPrecio,strComanda,Strid_mesero,strEstado,adonde_vas;
+            strcontenido,strFecha_ingreso,strMesa,strPrecio,strComanda,Strid_mesero,strEstado,adonde_vas,tituloNotificacion,contenidoNotificacion;
     private Estacion activity;
     private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles,
             recycler_detalle_pedido,recycler_detalle_pedido_espera,cocina_espera_recycler,recycler_detalle_pedido_cocina;
@@ -73,6 +82,11 @@ public class Estacion extends AppCompatActivity {
     private static String SERVIDOR_CONTROLADOR;
     private SharedPreferences id_SesionSher,idSher,nombreMeseroSher,id_meseroSher;
     private SharedPreferences.Editor editorNombreMesero;
+    private String CANALCOMUNICACION="CanalCRreathor";
+    private String channel_nombre="CapitanesCanal";
+    private String channel_description="01";
+    private int cuenta,cuentaAnterior;
+
     @SuppressLint("MissingInflatedId")
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +95,24 @@ public class Estacion extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_estacion);
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            System.out.println("Fetching FCM registration token failed");
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        String strToken=token;
+                        // Log and toast
+                        Log.e("TOKEN",strToken);
+                        System.out.println(token);
+                        Toast.makeText(Estacion.this, "el token de registro es"+token, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         activity = this;
         context = this;
@@ -159,9 +191,11 @@ public class Estacion extends AppCompatActivity {
         id_negocio = idSher.getString("idSesion","no hay");
 
         adonde_vas="principal";
-
+        tituloNotificacion="Tienes un nuevo pedido";
+        contenidoNotificacion="Has recibido un pedido de la mesa 4";
         Log.e("adonde",adonde_vas);
 
+        cuentaAnterior=0;
         pedir_pedidos();
 
 
@@ -298,7 +332,29 @@ public class Estacion extends AppCompatActivity {
             }
         });
 
+
+
     }
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        NotificationCompat.Builder constructorNotificacion = new NotificationCompat.Builder(this, CANALCOMUNICACION)
+                .setSmallIcon(R.drawable.merkav_vertical)
+                .setContentTitle(tituloNotificacion)
+                .setContentText(contenidoNotificacion)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel canalCreathor = new NotificationChannel(CANALCOMUNICACION, "canalComunicacion", importance);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager nM = getSystemService(NotificationManager.class);
+            nM.createNotificationChannel(canalCreathor);
+            nM.notify(0,constructorNotificacion.build());
+        }
+    }
+
     public void pedir_pedidos()
     {
         RequestQueue requestQueue= Volley.newRequestQueue(this);
@@ -314,9 +370,24 @@ public class Estacion extends AppCompatActivity {
                         try {
 
                             json_pedido=new JSONArray(response);
+
+
                             for (int i=0;i<json_pedido.length();i++){
                                 JSONObject jsonObject = json_pedido.getJSONObject(i);
-                                //Log.e("nombreMovies", String.valueOf(jsonObject));
+                                 cuenta=json_pedido.length();
+                                Log.e("cuentas:","00"+cuenta);
+                                Log.e("cuentasA:","00"+cuentaAnterior);
+                                if (cuenta!=(cuentaAnterior)){
+                                    Log.e("cuentas:","00"+cuenta);
+                                    Log.e("cuentasA:","00"+cuentaAnterior);
+                                    cuentaAnterior=cuenta;
+                                    createNotificationChannel();
+                                    Log.e("cuentasA:","00"+cuentaAnterior);
+
+
+                                }
+
+                                Log.e("nombreMovies", String.valueOf(json_pedido.length()));
                                 strIdPedido = jsonObject.getString("id");
                                 String strMesa = jsonObject.getString("mesa");
                                 String strComanda = jsonObject.getString("comanda");

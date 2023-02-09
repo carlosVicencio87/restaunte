@@ -1,5 +1,6 @@
 package com.creathor.restaurante;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -26,6 +27,9 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -45,7 +49,7 @@ public class Login extends AppCompatActivity {
     private ExecutorService executorService;
     private EditText usuario,contrasena;
     private TextView ingresar,recuperarContra,mensaje;
-    private String valUsuario,valContra,correo_final;
+    private String valUsuario,valContra,correo_final,strToken;
     private static String SERVIDOR_CONTROLADOR;
     private int check=0;
     private SharedPreferences datosUsuario;
@@ -64,6 +68,22 @@ public class Login extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_login);
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            System.out.println("Fetching FCM registration token failed");
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+                        strToken=token;
+                        // Log and toast
+                        Log.e("TOKEN",strToken);
+                    }
+                });
 
         SERVIDOR_CONTROLADOR = new Servidor().getIplocal();
         datosUsuario = getSharedPreferences("Usuario",this.MODE_PRIVATE);
@@ -143,6 +163,7 @@ public class Login extends AppCompatActivity {
                         }
                         else
                         {
+
                             try {
 
                                 json_datos_usuario=new JSONArray(response);
@@ -173,7 +194,7 @@ public class Login extends AppCompatActivity {
                                     editor.putString("activo",strActivo);
                                     editor.putString("reportes",strReportes);
                                     editor.putString("rol_usuario",stRol_usuario);
-                                    editor.putString("fireCode",strFireCode);
+                                    editor.putString("fireCode",strToken);
                                     editor.putString("idSesion",strIdSesion);
 
                                     editor.apply();
@@ -186,7 +207,7 @@ public class Login extends AppCompatActivity {
                                     Log.e("7",strActivo);
                                     Log.e("8",""+strReportes);
                                     Log.e("9",stRol_usuario);
-                                    Log.e("10",strFireCode);
+                                    Log.e("10",strToken);
                                     Log.e("11",strIdSesion);
 
 
@@ -222,6 +243,7 @@ public class Login extends AppCompatActivity {
                 HashMap<String,String> map = new HashMap<>();
                 map.put("nombre", valUsuario);
                 map.put("contrasena",valContra);
+                map.put("firecode",strToken);
                 return map;
             }
         };
