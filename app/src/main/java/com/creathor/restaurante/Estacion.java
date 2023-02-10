@@ -61,7 +61,7 @@ public class Estacion extends AppCompatActivity {
     private AdapterMeceros adapterMeceros;
     private String seleccion_mecero,selector_pedidos,strCadena,
             id_pedido_actual, strIdPedido,comanda_encontrada,mesa_encontrada,precio_encontrado,
-            fecha_encontrada,contenido_encontrado, id_negocio,idSesion, strMecero_asignado,id_mesero,
+            fecha_encontrada,contenido_encontrado, id_negocio,idSesion, fireCode, strMecero_asignado,id_mesero,
             strcontenido,strFecha_ingreso,strMesa,strPrecio,strComanda,Strid_mesero,strEstado,adonde_vas,tituloNotificacion,contenidoNotificacion;
     private Estacion activity;
     private RecyclerView lista_pedidos_recycler,lista_espera_recycler,meceros_disponibles,
@@ -80,7 +80,7 @@ public class Estacion extends AppCompatActivity {
     private JSONArray json_pedido,json_pedido_espera,json_meseros_disponibles,json_contenido_pedido,json_pedido_cocina;
     private Context context;
     private static String SERVIDOR_CONTROLADOR;
-    private SharedPreferences id_SesionSher,idSher,nombreMeseroSher,id_meseroSher;
+    private SharedPreferences id_SesionSher,idSher,nombreMeseroSher,id_meseroSher,firecoSher;
     private SharedPreferences.Editor editorNombreMesero;
     private String CANALCOMUNICACION="CanalCRreathor";
     private String channel_nombre="CapitanesCanal";
@@ -188,7 +188,10 @@ public class Estacion extends AppCompatActivity {
         id_SesionSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
         idSesion= id_SesionSher.getString("idSesion","no hay");
         idSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
-        id_negocio = idSher.getString("idSesion","no hay");
+        id_negocio = idSher.getString("id","no hay");
+        firecoSher=getSharedPreferences("Usuario",this.MODE_PRIVATE);
+        fireCode =firecoSher.getString("fireCode","no hay");
+        Log.e("fireCode", fireCode);
 
         adonde_vas="principal";
         tituloNotificacion="Tienes un nuevo pedido";
@@ -423,6 +426,10 @@ public class Estacion extends AppCompatActivity {
                 HashMap<String,String> map = new HashMap<>();
                 map.put("id", id_negocio);
                 map.put("idSesion",idSesion);
+                map.put("fireCode",fireCode);
+
+                Log.e("idSESION",idSesion);
+                Log.e("fireCode", fireCode);
                 return map;
             }
         };
@@ -498,8 +505,11 @@ public class Estacion extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String,String> map = new HashMap<>();
-                map.put("id", strIdPedido);
+                map.put("id", id_negocio);
                 map.put("idSesion",idSesion);
+                map.put("fireCode",fireCode);
+                Log.e("fireCode", fireCode);
+
                 return map;
             }
         };
@@ -575,8 +585,11 @@ public class Estacion extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap<String,String> map = new HashMap<>();
-                map.put("id", strIdPedido);
+                map.put("id", id_negocio);
                 map.put("idSesion",idSesion);
+                map.put("fireCode",fireCode);
+                Log.e("fireCode", fireCode);
+
                 return map;
             }
         };
@@ -833,6 +846,8 @@ public class Estacion extends AppCompatActivity {
                 Log.e("idcontenido",strIdPedido);
                 map.put("id",strIdPedido);
                 map.put("idSesion",idSesion);
+                map.put("fireCode",fireCode);
+
 
                 return map;
             }
@@ -847,7 +862,7 @@ public class Estacion extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-
+                            listaPedidosRecyclersEspera.clear();
                             json_contenido_pedido=new JSONArray(response);
                             for (int i=0;i<json_contenido_pedido.length();i++){
                                 JSONObject jsonObject = json_contenido_pedido.getJSONObject(i);
@@ -895,6 +910,8 @@ public class Estacion extends AppCompatActivity {
                 Log.e("idcontenido",strIdPedido);
                 map.put("id",strIdPedido);
                 map.put("idSesion",idSesion);
+                map.put("fireCode",fireCode);
+
 
                 return map;
             }
@@ -965,6 +982,7 @@ public class Estacion extends AppCompatActivity {
                 Log.e("idcontenido",strIdPedido);
                 map.put("id",strIdPedido);
                 map.put("idSesion",idSesion);
+                map.put("fireCode",fireCode);
 
                 return map;
             }
